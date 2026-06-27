@@ -1,4 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
 
 export default function WelcomeScreen() {
   return (
@@ -8,28 +9,38 @@ export default function WelcomeScreen() {
         {/* Logo Placeholder */}
         <View style={styles.logoPlaceholder} />
 
-        {/* Heading */}
-        <Text style={styles.heading}>Stay Connected</Text>
+        {/* App Name */}
+        <Text style={styles.heading}>Shiftly</Text>
 
-        {/* Subtitle */}
+        {/* Tagline */}
         <Text style={styles.subtitle}>
-          Helping you stay connected with the service professionals you know and trust.
+          Stay connected with your regulars.{'\n'}Share your schedule, build your following.
         </Text>
 
         {/* Buttons */}
         <View style={styles.buttonGroup}>
-
-          {/* Primary Button */}
-          <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85}>
-            <Text style={styles.primaryButtonText}>Continue as Guest</Text>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            activeOpacity={0.85}
+            onPress={() => router.push('/signup-pro')}
+          >
+            <Text style={styles.primaryButtonText}>Create Professional Account</Text>
           </TouchableOpacity>
 
-          {/* Secondary Button */}
-          <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.85}>
-            <Text style={styles.secondaryButtonText}>Continue as Professional</Text>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            activeOpacity={0.85}
+            onPress={() => router.push('/login')}
+          >
+            <Text style={styles.secondaryButtonText}>Log In</Text>
           </TouchableOpacity>
-
         </View>
+
+        {/* Guest note — no sign up button on purpose */}
+        <Text style={styles.guestNote}>
+          Joining as a guest? Ask your professional for an invite link.
+        </Text>
+
       </View>
     </SafeAreaView>
   );
@@ -48,24 +59,22 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   logoPlaceholder: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: '#1F2937',
     borderWidth: 1,
     borderColor: '#374151',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   heading: {
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: '700',
     color: '#F9FAFB',
-    textAlign: 'center',
-    letterSpacing: -0.5,
+    letterSpacing: -1,
   },
   subtitle: {
     fontSize: 16,
-    fontWeight: '400',
     color: '#9CA3AF',
     textAlign: 'center',
     lineHeight: 24,
@@ -100,5 +109,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#F9FAFB',
+  },
+  guestNote: {
+    fontSize: 13,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 8,
   },
 });
