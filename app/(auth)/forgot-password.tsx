@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -11,12 +12,36 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { supabase } from '../../lib/supabase';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  // After submitting, show a confirmation state instead of the form.
+  const handleReset = async () => {
+    setError('');
+
+    if (!email.trim()) {
+      setError('Please enter your email address.');
+      return;
+    }
+
+    setLoading(true);
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim());
+    setLoading(false);
+
+    if (resetError) {
+      setError(resetError.message);
+      return;
+    }
+
+    // Always show the confirmation screen regardless of whether the email exists.
+    // This is intentional — revealing which emails are registered is a security risk.
+    setSubmitted(true);
+  };
+
   if (submitted) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -81,12 +106,18 @@ export default function ForgotPasswordScreen() {
             </View>
           </View>
 
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
           <TouchableOpacity
-            style={styles.primaryButton}
+            style={[styles.primaryButton, loading && styles.primaryButtonDisabled]}
             activeOpacity={0.85}
-            onPress={() => setSubmitted(true)}
+            onPress={handleReset}
+            disabled={loading}
           >
-            <Text style={styles.primaryButtonText}>Send Reset Link</Text>
+            {loading
+              ? <ActivityIndicator color="#111827" />
+              : <Text style={styles.primaryButtonText}>Send Reset Link</Text>
+            }
           </TouchableOpacity>
 
         </ScrollView>
@@ -173,12 +204,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#F9FAFB',
   },
+  errorText: {
+    color: '#F87171',
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   primaryButton: {
     backgroundColor: '#F9FAFB',
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
     width: '100%',
+  },
+  primaryButtonDisabled: {
+    opacity: 0.6,
   },
   primaryButtonText: {
     fontSize: 16,

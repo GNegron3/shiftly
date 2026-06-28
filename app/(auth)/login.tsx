@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -11,10 +12,42 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { supabase } from '../../lib/supabase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+    setError('');
+
+    if (!email.trim() || !password) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
+    setLoading(true);
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    setLoading(false);
+
+    console.log('[Login] error:', JSON.stringify(signInError));
+    console.log('[Login] session:', data?.session ? 'EXISTS' : 'NULL');
+    console.log('[Login] user email:', data?.user?.email);
+    console.log('[Login] user role metadata:', data?.user?.user_metadata?.role);
+
+    if (signInError) {
+      setError(signInError.message);
+      return;
+    }
+
+    // Navigate to the root index, which reads the session and redirects to the right dashboard.
+    router.replace('/');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -74,8 +107,18 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85}>
-            <Text style={styles.primaryButtonText}>Log In</Text>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+          <TouchableOpacity
+            style={[styles.primaryButton, loading && styles.primaryButtonDisabled]}
+            activeOpacity={0.85}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading
+              ? <ActivityIndicator color="#111827" />
+              : <Text style={styles.primaryButtonText}>Log In</Text>
+            }
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -154,12 +197,21 @@ const styles = StyleSheet.create({
     color: '#60A5FA',
     fontSize: 14,
   },
+  errorText: {
+    color: '#F87171',
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   primaryButton: {
     backgroundColor: '#F9FAFB',
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
     width: '100%',
+  },
+  primaryButtonDisabled: {
+    opacity: 0.6,
   },
   primaryButtonText: {
     fontSize: 16,

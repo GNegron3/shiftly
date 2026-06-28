@@ -1,7 +1,17 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { useAuth } from '../../context/auth';
 
 export default function GuestFeed() {
+  const { signOut } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleSignOut = async () => {
+    setLoading(true);
+    await signOut();
+    // onAuthStateChange fires, session becomes null, app/index.tsx redirects to /welcome.
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -12,9 +22,13 @@ export default function GuestFeed() {
         </Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.replace('/welcome')}
+          onPress={handleSignOut}
+          disabled={loading}
         >
-          <Text style={styles.buttonText}>← Back to Welcome</Text>
+          {loading
+            ? <ActivityIndicator color="#9CA3AF" />
+            : <Text style={styles.buttonText}>Log Out</Text>
+          }
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -58,6 +72,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F2937',
     borderWidth: 1,
     borderColor: '#374151',
+    minWidth: 120,
+    alignItems: 'center',
   },
   buttonText: {
     color: '#9CA3AF',
