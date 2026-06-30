@@ -19,31 +19,52 @@ type Profile = {
   bio: string;
 };
 
+type ScheduleRow = {
+  day_of_week: number;
+  shift_type: string;
+  custom_note: string | null;
+};
+
+const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const shiftLabel = (type: string, note: string | null): string => {
+  if (type === 'custom') return note?.trim() || 'Custom';
+  return type.charAt(0).toUpperCase() + type.slice(1);
+};
+
 export default function ProDashboard() {
   const { session, signOut } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [schedule, setSchedule] = useState<ScheduleRow[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
 
-  // useFocusEffect re-runs every time this screen comes back into focus,
-  // so the dashboard updates immediately after the user saves their profile.
   useFocusEffect(
     useCallback(() => {
       if (!session) return;
 
-      const loadProfile = async () => {
-        setLoadingProfile(true);
-        const { data } = await supabase
-          .from('profiles')
-          .select('full_name, trade, workplace_name, workplace_location, bio')
-          .eq('id', session.user.id)
-          .single();
+      const loadData = async () => {
+        setLoadingData(true);
 
-        setProfile(data ?? null);
-        setLoadingProfile(false);
+        const [profileResult, scheduleResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('full_name, trade, workplace_name, workplace_location, bio')
+            .eq('id', session.user.id)
+            .single(),
+          supabase
+            .from('schedules')
+            .select('day_of_week, shift_type, custom_note')
+            .eq('pro_id', session.user.id)
+            .order('day_of_week'),
+        ]);
+
+        setProfile(profileResult.data ?? null);
+        setSchedule(scheduleResult.data ?? []);
+        setLoadingData(false);
       };
 
-      loadProfile();
+      loadData();
     }, [session])
   );
 
@@ -53,6 +74,9 @@ export default function ProDashboard() {
     profile?.workplace_name &&
     profile?.bio
   );
+
+  // All 7 days must be stored for the schedule to be considered set.
+  const hasSchedule = schedule.length === 7;
 
   const handleSignOut = async () => {
     setSigningOut(true);
@@ -74,8 +98,7 @@ export default function ProDashboard() {
           </TouchableOpacity>
         </View>
 
-        {/* Main content */}
-        {loadingProfile ? (
+        {loadingData ? (
           <View style={styles.centered}>
             <ActivityIndicator color="#F9FAFB" />
           </View>
@@ -128,12 +151,49 @@ export default function ProDashboard() {
               </TouchableOpacity>
             </View>
 
-            {/* Schedule placeholder */}
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Next Step</Text>
-              <Text style={styles.cardBody}>
-                Create your weekly schedule so your guests know when they can catch you.
-              </Text>
+            {/* Schedule card */}
+            <View style={[styles.card, hasSchedule && styles.cardComplete]}>
+              {hasSchedule ? (
+                <>
+                  <Text style={styles.cardTitle}>This Week</Text>
+                  <View style={styles.scheduleGrid}>
+                    {schedule.map(row => (
+                      <View key={row.day_of_week} style={styles.scheduleRow}>
+                        <Text style={styles.scheduleDay}>
+                          {DAY_SHORT[row.day_of_week]}
+                        </Text>
+                        <Text style={[
+                          styles.scheduleShift,
+                          row.shift_type === 'off' && styles.scheduleShiftOff,
+                        ]}>
+                          {shiftLabel(row.shift_type, row.custom_note)}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                  <TouchableOpacity
+                    style={styles.cardButton}
+                    activeOpacity={0.85}
+                    onPress={() => router.push('/(pro)/schedule')}
+                  >
+                    <Text style={styles.cardButtonText}>Edit Schedule</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.cardTitle}>Next Step</Text>
+                  <Text style={styles.cardBody}>
+                    Create your weekly schedule so your guests know when they can catch you.
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.cardButton}
+                    activeOpacity={0.85}
+                    onPress={() => router.push('/(pro)/schedule')}
+                  >
+                    <Text style={styles.cardButtonText}>Set My Schedule</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
 
           </View>
@@ -230,5 +290,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#111827',
+  },
+  scheduleGrid: {
+    gap: 5,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  scheduleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  scheduleDay: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6B7280',
+    width: 32,
+  },
+  scheduleShift: {
+    fontSize: 13,
+    color: '#F9FAFB',
+    fontWeight: '500',
+  },
+  scheduleShiftOff: {
+    color: '#4B5563',
+    fontWeight: '400',
   },
 });
