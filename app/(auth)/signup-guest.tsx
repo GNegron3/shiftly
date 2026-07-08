@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -11,12 +12,91 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { supabase } from '../../lib/supabase';
+import { createGuestProfile } from '../../services/guestProfileService';
 
 export default function SignUpGuestScreen() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
+
+  const handleSignUp = async () => {
+    setError('');
+
+    if (!fullName.trim() || !email.trim() || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading(true);
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: { full_name: fullName.trim(), role: 'guest' },
+      },
+    });
+
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (data.user) {
+      try {
+        await createGuestProfile({ id: data.user.id, full_name: fullName.trim() });
+      } catch {
+        setError('Account created but profile setup failed. Please log in and try again.');
+        setLoading(false);
+        return;
+      }
+    }
+
+    setLoading(false);
+
+    if (!data.session) {
+      setAwaitingConfirmation(true);
+    } else {
+      router.replace('/');
+    }
+  };
+
+  if (awaitingConfirmation) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.confirmContainer}>
+          <Text style={styles.confirmIcon}>✉️</Text>
+          <Text style={styles.heading}>Check your email</Text>
+          <Text style={styles.confirmSubtitle}>
+            We sent a confirmation link to{' '}
+            <Text style={styles.emailHighlight}>{email}</Text>.
+            {'\n\n'}Open it to activate your account, then log in.
+          </Text>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            activeOpacity={0.85}
+            onPress={() => router.replace('/login')}
+          >
+            <Text style={styles.primaryButtonText}>Go to Log In</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -28,7 +108,6 @@ export default function SignUpGuestScreen() {
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Invite banner — pro's name will populate here from the invite link */}
           <View style={styles.inviteBanner}>
             <Text style={styles.inviteText}>
               You were invited by{' '}
@@ -96,8 +175,18 @@ export default function SignUpGuestScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85}>
-            <Text style={styles.primaryButtonText}>Create Account</Text>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+          <TouchableOpacity
+            style={[styles.primaryButton, loading && styles.primaryButtonDisabled]}
+            activeOpacity={0.85}
+            onPress={handleSignUp}
+            disabled={loading}
+          >
+            {loading
+              ? <ActivityIndicator color="#111827" />
+              : <Text style={styles.primaryButtonText}>Create Account</Text>
+            }
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -124,6 +213,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingTop: 40,
     paddingBottom: 48,
+  },
+  confirmContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    gap: 16,
+  },
+  confirmIcon: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  confirmSubtitle: {
+    fontSize: 16,
+    color: '#9CA3AF',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  emailHighlight: {
+    color: '#F9FAFB',
+    fontWeight: '500',
   },
   inviteBanner: {
     backgroundColor: '#1F2937',
@@ -180,12 +290,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#F9FAFB',
   },
+  errorText: {
+    color: '#F87171',
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   primaryButton: {
     backgroundColor: '#F9FAFB',
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
     width: '100%',
+  },
+  primaryButtonDisabled: {
+    opacity: 0.6,
   },
   primaryButtonText: {
     fontSize: 16,

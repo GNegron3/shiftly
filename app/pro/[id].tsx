@@ -13,6 +13,8 @@ import { getProfile } from '../../services/profileService';
 import { getSchedule } from '../../services/scheduleService';
 import { ProfessionalProfile } from '../../types/Profile';
 import { DaySchedule } from '../../types/Schedule';
+import { useAuth } from '../../context/auth';
+import { useFollow } from '../../hooks/useFollow';
 
 const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -30,11 +32,22 @@ function getInitials(fullName: string): string {
 
 export default function PublicProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { session } = useAuth();
 
   const [profile, setProfile] = useState<ProfessionalProfile | null>(null);
   const [schedule, setSchedule] = useState<DaySchedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  const userRole = session?.user.user_metadata?.role as 'pro' | 'guest' | undefined;
+  const isGuest = userRole === 'guest';
+  const guestId = isGuest ? (session?.user.id ?? null) : null;
+  const professionalId = id ?? null;
+
+  const { following, loading: followLoading, toggling, toggle } = useFollow(
+    guestId,
+    professionalId,
+  );
 
   useEffect(() => {
     if (!id) { setNotFound(true); setLoading(false); return; }
@@ -96,6 +109,48 @@ export default function PublicProfileScreen() {
   }
 
   const hasSchedule = schedule.length > 0;
+
+  const renderFollowButton = () => {
+    if (userRole === 'pro') return null;
+
+    if (!session) {
+      return (
+        <TouchableOpacity
+          style={styles.followButton}
+          activeOpacity={0.85}
+          onPress={() => router.push('/welcome')}
+        >
+          <Text style={styles.followButtonText}>Sign up to follow</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (followLoading) {
+      return (
+        <View style={[styles.followButton, styles.followButtonDisabled]}>
+          <ActivityIndicator color="#9CA3AF" />
+        </View>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        style={[styles.followButton, following && styles.followButtonActive]}
+        activeOpacity={0.85}
+        onPress={toggle}
+        disabled={toggling}
+      >
+        {toggling
+          ? <ActivityIndicator color={following ? '#111827' : '#F9FAFB'} />
+          : (
+            <Text style={[styles.followButtonText, following && styles.followButtonTextActive]}>
+              {following ? 'Following' : 'Follow'}
+            </Text>
+          )
+        }
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -165,14 +220,7 @@ export default function PublicProfileScreen() {
           )}
         </View>
 
-        {/* Follow — placeholder until Following System is built */}
-        <TouchableOpacity
-          style={styles.followButton}
-          activeOpacity={0.85}
-          disabled
-        >
-          <Text style={styles.followButtonText}>Follow — Coming Soon</Text>
-        </TouchableOpacity>
+        {renderFollowButton()}
 
         <Text style={styles.footerText}>Powered by Shiftly</Text>
 
@@ -305,18 +353,29 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   followButton: {
-    backgroundColor: '#1F2937',
-    borderWidth: 1,
-    borderColor: '#374151',
+    backgroundColor: '#F9FAFB',
     borderRadius: 16,
     paddingVertical: 18,
     alignItems: 'center',
     marginTop: 8,
-    opacity: 0.5,
+  },
+  followButtonActive: {
+    backgroundColor: '#1F2937',
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  followButtonDisabled: {
+    backgroundColor: '#1F2937',
+    borderWidth: 1,
+    borderColor: '#374151',
+    opacity: 0.6,
   },
   followButtonText: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#111827',
+  },
+  followButtonTextActive: {
     color: '#9CA3AF',
   },
   footerText: {
