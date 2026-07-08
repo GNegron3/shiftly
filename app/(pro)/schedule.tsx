@@ -11,116 +11,38 @@ import {
   View,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
+import { useState } from 'react';
 import { useAuth } from '../../context/auth';
-
-type ShiftType = 'off' | 'lunch' | 'dinner' | 'double' | 'custom';
-
-type DaySchedule = {
-  type: ShiftType;
-  note: string;
-};
+import { useSchedule } from '../../hooks/useSchedule';
 
 const DAYS = [
   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
 ];
 
-const SHIFTS: { type: ShiftType; label: string }[] = [
+const SHIFTS = [
   { type: 'off',    label: 'Off'    },
   { type: 'lunch',  label: 'Lunch'  },
   { type: 'dinner', label: 'Dinner' },
   { type: 'double', label: 'Double' },
   { type: 'custom', label: 'Custom' },
-];
-
-const defaultWeek = (): DaySchedule[] =>
-  Array.from({ length: 7 }, () => ({ type: 'off' as ShiftType, note: '' }));
+] as const;
 
 export default function ScheduleScreen() {
   const { session } = useAuth();
-  const [schedule, setSchedule] = useState<DaySchedule[]>(defaultWeek());
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const { schedule, loading, error, saving, saveError, setDay, setNote, save } =
+    useSchedule(session?.user.id);
+
   const [successMessage, setSuccessMessage] = useState('');
 
-  useEffect(() => {
-    if (!session) return;
-
-    const loadSchedule = async () => {
-      const { data } = await supabase
-        .from('schedules')
-        .select('day_of_week, shift_type, custom_note')
-        .eq('pro_id', session.user.id)
-        .order('day_of_week');
-
-      const week = defaultWeek();
-      if (data) {
-        data.forEach(row => {
-          week[row.day_of_week] = {
-            type: row.shift_type as ShiftType,
-            note: row.custom_note ?? '',
-          };
-        });
-      }
-      setSchedule(week);
-      setLoading(false);
-    };
-
-    loadSchedule();
-  }, [session]);
-
-  const setDay = (dayIndex: number, type: ShiftType) => {
-    setSchedule(prev => {
-      const next = [...prev];
-      next[dayIndex] = { ...next[dayIndex], type };
-      return next;
-    });
-  };
-
-  const setNote = (dayIndex: number, note: string) => {
-    setSchedule(prev => {
-      const next = [...prev];
-      next[dayIndex] = { ...next[dayIndex], note };
-      return next;
-    });
-  };
-
   const handleSave = async () => {
-    setError('');
     setSuccessMessage('');
-    if (!session) return;
-
-    // Validate: custom days must have a note.
-    const missingNote = schedule.findIndex(d => d.type === 'custom' && !d.note.trim());
-    if (missingNote !== -1) {
-      setError(`Please add a note for ${DAYS[missingNote]}.`);
-      return;
+    try {
+      await save();
+      setSuccessMessage('Schedule saved!');
+      setTimeout(() => router.back(), 900);
+    } catch {
+      // saveError from hook is displayed below
     }
-
-    setSaving(true);
-    const rows = schedule.map((day, i) => ({
-      pro_id: session.user.id,
-      day_of_week: i,
-      shift_type: day.type,
-      custom_note: day.type === 'custom' ? day.note.trim() : null,
-      updated_at: new Date().toISOString(),
-    }));
-
-    const { error: upsertError } = await supabase
-      .from('schedules')
-      .upsert(rows, { onConflict: 'pro_id,day_of_week' });
-
-    setSaving(false);
-
-    if (upsertError) {
-      setError(upsertError.message);
-      return;
-    }
-
-    setSuccessMessage('Schedule saved!');
-    setTimeout(() => router.back(), 900);
   };
 
   if (loading) {
@@ -128,6 +50,19 @@ export default function ScheduleScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
           <ActivityIndicator color="#F9FAFB" />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Text style={styles.backText}>← Back</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -193,7 +128,7 @@ export default function ScheduleScreen() {
             ))}
           </View>
 
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {saveError ? <Text style={styles.errorText}>{saveError}</Text> : null}
           {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
 
           <TouchableOpacity
@@ -224,6 +159,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 16,
+    padding: 32,
   },
   container: {
     flexGrow: 1,

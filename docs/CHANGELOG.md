@@ -9,6 +9,19 @@ Shiftly uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **Schedule service** — `services/scheduleService.ts`; responsibilities: `getSchedule`, `saveSchedule`; all Supabase access for the schedule feature centralized here; `DayInput` type exported for use by the hook
+- **`useSchedule` hook** — `hooks/useSchedule.ts`; encapsulates schedule fetch, form state (`DayInput[]`), day/note mutation, validation (custom shifts require a note), save, and loading/saving/error states
+
+### Changed
+
+- **Schedule screen** — `app/(pro)/schedule.tsx` refactored from inline Supabase calls to `useSchedule` hook; duplicate local type definitions removed; fetch error now surfaces a dedicated error screen with back navigation
+- **`profileService.ts`** — `getProSchedule` removed; schedule access is now owned by `scheduleService.ts`
+- **Public profile screen** — `app/pro/[id].tsx` updated to import `getSchedule` from `scheduleService` instead of `profileService`
+
+---
+
 ## [0.1.0] — 2026-07-08 (MVP in development)
 
 ### Added
@@ -22,7 +35,7 @@ Shiftly uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Profile edit screen** — `app/(pro)/profile.tsx`; fields: full name, trade, workplace name, workplace location (optional), bio; upserts to Supabase `profiles` table; pre-fills from signup metadata on first visit; avatar placeholder shows initials (`cf5c4a9`)
 - **Weekly schedule management** — `app/(pro)/schedule.tsx`; seven-day schedule with shift types: Off, Lunch, Dinner, Double, Custom (with note); upserts to Supabase `schedules` table with `(pro_id, day_of_week)` uniqueness constraint; schedule summary displayed on dashboard (`0c10563`)
 - **Shared TypeScript interfaces** — `types/Profile.ts` (`ProfessionalProfile`, `UpdateProfilePayload`) and `types/Schedule.ts` (`ShiftType`, `DaySchedule`) (`cd3b112`)
-- **Profile service** — `services/profileService.ts`; responsibilities: `getProfile`, `updateProfile`, `getProSchedule`; all Supabase access for the profile feature is centralized here (`cd3b112`)
+- **Profile service** — `services/profileService.ts`; responsibilities: `getProfile`, `updateProfile`; all Supabase access for the profile feature is centralized here (`cd3b112`)
 - **`useProfile` hook** — `hooks/useProfile.ts`; encapsulates fetch and save logic with `loading`, `error`, `saving`, and `saveError` states (`cd3b112`)
 - **Public profile screen** — `app/pro/[id].tsx`; displays professional name, trade, workplace, bio, and weekly schedule; accessible without authentication; handles profile-not-found state; follow button present as disabled placeholder (`cd3b112`)
 - **Share Profile button** — Appears on the profile edit screen once the profile is complete; opens the native share sheet via React Native `Share` API (`cd3b112`)

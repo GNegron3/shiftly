@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { getProfile, getProSchedule } from '../../services/profileService';
+import { getProfile } from '../../services/profileService';
+import { getSchedule } from '../../services/scheduleService';
 import { ProfessionalProfile } from '../../types/Profile';
 import { DaySchedule } from '../../types/Schedule';
 
@@ -42,7 +43,7 @@ export default function PublicProfileScreen() {
       try {
         const [profileData, scheduleData] = await Promise.all([
           getProfile(id),
-          getProSchedule(id),
+          getSchedule(id),
         ]);
         if (!profileData) {
           setNotFound(true);

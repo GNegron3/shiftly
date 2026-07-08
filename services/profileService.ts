@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabase';
 import { ProfessionalProfile, UpdateProfilePayload } from '../types/Profile';
-import { DaySchedule } from '../types/Schedule';
 
 export async function getProfile(userId: string): Promise<ProfessionalProfile | null> {
   const { data, error } = await supabase
@@ -27,15 +26,4 @@ export async function updateProfile(
   });
 
   if (error) throw error;
-}
-
-export async function getProSchedule(proId: string): Promise<DaySchedule[]> {
-  const { data, error } = await supabase
-    .from('schedules')
-    .select('*')
-    .eq('pro_id', proId)
-    .order('day_of_week', { ascending: true });
-
-  if (error) throw error;
-  return data ?? [];
 }
