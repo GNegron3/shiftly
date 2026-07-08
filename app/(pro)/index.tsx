@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   SafeAreaView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -83,6 +84,14 @@ export default function ProDashboard() {
     await signOut();
   };
 
+  const handleShareProfile = async () => {
+    if (!session) return;
+    await Share.share({
+      message: `Check out my Shiftly profile!\n\nProfile ID: ${session.user.id}`,
+      title: 'Share My Shiftly Profile',
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -129,7 +138,7 @@ export default function ProDashboard() {
                 <>
                   <Text style={styles.cardTitle}>Profile complete</Text>
                   <Text style={styles.cardBody}>
-                    You're all set! Your profile is ready for guests once you start sharing your schedule.
+                    {"You're all set! Your profile is ready for guests once you start sharing your schedule."}
                   </Text>
                 </>
               ) : (
@@ -150,6 +159,23 @@ export default function ProDashboard() {
                 </Text>
               </TouchableOpacity>
             </View>
+
+            {/* Share profile card — visible once profile + schedule are complete */}
+            {isProfileComplete && hasSchedule && (
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>Share Your Profile</Text>
+                <Text style={styles.cardBody}>
+                  Your profile and schedule are ready. Share your link with guests so they can follow you.
+                </Text>
+                <TouchableOpacity
+                  style={styles.cardButton}
+                  activeOpacity={0.85}
+                  onPress={handleShareProfile}
+                >
+                  <Text style={styles.cardButtonText}>Share Profile</Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
             {/* Schedule card */}
             <View style={[styles.card, hasSchedule && styles.cardComplete]}>

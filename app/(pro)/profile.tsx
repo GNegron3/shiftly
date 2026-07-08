@@ -4,6 +4,7 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -12,56 +13,39 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/auth';
+import { useProfile } from '../../hooks/useProfile';
 
 export default function ProfileScreen() {
   const { session } = useAuth();
+  const { profile, loading, saving, saveError, updateProfile } = useProfile(
+    session?.user.id,
+  );
 
   const [fullName, setFullName] = useState('');
   const [trade, setTrade] = useState('');
   const [workplaceName, setWorkplaceName] = useState('');
   const [workplaceLocation, setWorkplaceLocation] = useState('');
   const [bio, setBio] = useState('');
-
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [validationError, setValidationError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Pre-populate form once profile loads. Falls back to signup metadata for new users.
   useEffect(() => {
-    if (!session) return;
+    if (loading) return;
 
-    const loadProfile = async () => {
-      const { data, error: fetchError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        // PGRST116 = row not found, which is expected for new users — not a real error.
-        setError('Failed to load profile.');
-      }
-
-      if (data) {
-        setFullName(data.full_name ?? '');
-        setTrade(data.trade ?? '');
-        setWorkplaceName(data.workplace_name ?? '');
-        setWorkplaceLocation(data.workplace_location ?? '');
-        setBio(data.bio ?? '');
-      } else {
-        // No profile row yet — pre-fill from signup metadata.
-        const meta = session.user.user_metadata;
-        setFullName(meta?.full_name ?? '');
-        setTrade(meta?.trade ?? '');
-      }
-
-      setLoadingProfile(false);
-    };
-
-    loadProfile();
-  }, [session]);
+    if (profile) {
+      setFullName(profile.full_name);
+      setTrade(profile.trade);
+      setWorkplaceName(profile.workplace_name);
+      setWorkplaceLocation(profile.workplace_location ?? '');
+      setBio(profile.bio);
+    } else {
+      const meta = session?.user.user_metadata;
+      setFullName(meta?.full_name ?? '');
+      setTrade(meta?.trade ?? '');
+    }
+  }, [loading, profile, session]);
 
   const getInitials = () => {
     const parts = fullName.trim().split(' ').filter(Boolean);
@@ -70,39 +54,48 @@ export default function ProfileScreen() {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
+  const isComplete = !!(
+    profile?.full_name &&
+    profile?.trade &&
+    profile?.workplace_name &&
+    profile?.bio
+  );
+
   const handleSave = async () => {
-    setError('');
+    setValidationError('');
     setSuccessMessage('');
 
-    if (!fullName.trim()) { setError('Full name is required.'); return; }
-    if (!trade.trim()) { setError('Trade / role is required.'); return; }
-    if (!workplaceName.trim()) { setError('Workplace name is required.'); return; }
-    if (!bio.trim()) { setError('Bio is required.'); return; }
+    if (!fullName.trim()) { setValidationError('Full name is required.'); return; }
+    if (!trade.trim()) { setValidationError('Trade / role is required.'); return; }
+    if (!workplaceName.trim()) { setValidationError('Workplace name is required.'); return; }
+    if (!bio.trim()) { setValidationError('Bio is required.'); return; }
 
-    if (!session) return;
-
-    setSaving(true);
-    const { error: upsertError } = await supabase.from('profiles').upsert({
-      id: session.user.id,
-      full_name: fullName.trim(),
-      trade: trade.trim(),
-      workplace_name: workplaceName.trim(),
-      workplace_location: workplaceLocation.trim() || null,
-      bio: bio.trim(),
-      updated_at: new Date().toISOString(),
-    });
-    setSaving(false);
-
-    if (upsertError) {
-      setError(upsertError.message);
-      return;
+    try {
+      await updateProfile({
+        full_name: fullName.trim(),
+        trade: trade.trim(),
+        workplace_name: workplaceName.trim(),
+        workplace_location: workplaceLocation.trim() || null,
+        bio: bio.trim(),
+      });
+      setSuccessMessage('Profile saved!');
+      setTimeout(() => router.back(), 1000);
+    } catch {
+      // saveError from hook is shown below
     }
-
-    setSuccessMessage('Profile saved!');
-    setTimeout(() => router.back(), 1000);
   };
 
-  if (loadingProfile) {
+  const handleShare = async () => {
+    if (!session) return;
+    await Share.share({
+      message: `Check out my Shiftly profile!\n\nProfile ID: ${session.user.id}`,
+      title: 'Share My Shiftly Profile',
+    });
+  };
+
+  const displayError = validationError || saveError || '';
+
+  if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
@@ -135,7 +128,7 @@ export default function ProfileScreen() {
             <Text style={styles.subtitle}>This is what your regulars will see.</Text>
           </View>
 
-          {/* Photo placeholder */}
+          {/* Avatar */}
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
               <Text style={styles.avatarInitials}>{getInitials()}</Text>
@@ -145,7 +138,9 @@ export default function ProfileScreen() {
 
           <View style={styles.form}>
             <View style={styles.field}>
-              <Text style={styles.label}>Full Name <Text style={styles.required}>*</Text></Text>
+              <Text style={styles.label}>
+                Full Name <Text style={styles.required}>*</Text>
+              </Text>
               <TextInput
                 style={styles.input}
                 placeholder="Maria Garcia"
@@ -158,7 +153,9 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.field}>
-              <Text style={styles.label}>Trade / Role <Text style={styles.required}>*</Text></Text>
+              <Text style={styles.label}>
+                Trade / Role <Text style={styles.required}>*</Text>
+              </Text>
               <TextInput
                 style={styles.input}
                 placeholder="e.g. Bartender, Server, Chef"
@@ -170,7 +167,9 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.field}>
-              <Text style={styles.label}>Workplace Name <Text style={styles.required}>*</Text></Text>
+              <Text style={styles.label}>
+                Workplace Name <Text style={styles.required}>*</Text>
+              </Text>
               <TextInput
                 style={styles.input}
                 placeholder="e.g. The Gold Bar"
@@ -197,7 +196,9 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.field}>
-              <Text style={styles.label}>Bio <Text style={styles.required}>*</Text></Text>
+              <Text style={styles.label}>
+                Bio <Text style={styles.required}>*</Text>
+              </Text>
               <TextInput
                 style={[styles.input, styles.bioInput]}
                 placeholder="Tell your regulars a bit about yourself..."
@@ -211,8 +212,12 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-          {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
+          {displayError ? (
+            <Text style={styles.errorText}>{displayError}</Text>
+          ) : null}
+          {successMessage ? (
+            <Text style={styles.successText}>{successMessage}</Text>
+          ) : null}
 
           <TouchableOpacity
             style={[styles.primaryButton, saving && styles.primaryButtonDisabled]}
@@ -220,12 +225,22 @@ export default function ProfileScreen() {
             onPress={handleSave}
             disabled={saving}
           >
-            {saving
-              ? <ActivityIndicator color="#111827" />
-              : <Text style={styles.primaryButtonText}>Save Profile</Text>
-            }
+            {saving ? (
+              <ActivityIndicator color="#111827" />
+            ) : (
+              <Text style={styles.primaryButtonText}>Save Profile</Text>
+            )}
           </TouchableOpacity>
 
+          {isComplete && (
+            <TouchableOpacity
+              style={styles.shareButton}
+              activeOpacity={0.85}
+              onPress={handleShare}
+            >
+              <Text style={styles.shareButtonText}>Share My Profile</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -355,5 +370,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#111827',
+  },
+  shareButton: {
+    marginTop: 12,
+    paddingVertical: 18,
+    borderRadius: 16,
+    alignItems: 'center',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  shareButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#F9FAFB',
   },
 });
