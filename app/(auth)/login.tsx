@@ -10,11 +10,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import {
+  isValidReturnTo,
+  getPendingReturnTo,
+  clearPendingReturnTo,
+} from '../../lib/pendingReturnTo';
 
 export default function LoginScreen() {
+  const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -45,8 +52,23 @@ export default function LoginScreen() {
       return;
     }
 
-    // Navigate to the root index, which reads the session and redirects to the right dashboard.
-    router.replace('/');
+    const role = data?.user?.user_metadata?.role;
+
+    // Read stored destination first, then clear it — always, regardless of role or use.
+    const stored = await getPendingReturnTo();
+    await clearPendingReturnTo();
+
+    // In-memory param takes precedence over stored value; both must pass validation.
+    const destination =
+      isValidReturnTo(returnTo) ? returnTo :
+      isValidReturnTo(stored)   ? stored   :
+      null;
+
+    if (role === 'guest' && destination) {
+      router.replace(destination as any);
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -122,7 +144,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account? </Text>
+            <Text style={styles.footerText}>{"Don't have an account? "}</Text>
             <TouchableOpacity onPress={() => router.push('/signup-pro')}>
               <Text style={styles.footerLink}>Sign up as a Professional</Text>
             </TouchableOpacity>

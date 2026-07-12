@@ -283,8 +283,11 @@ Shiftly provides a professional, privacy-first solution.
 **Professional:**
 Create Account → Complete Profile → Publish Schedule → Share Profile Link → Build Followers → Update Schedule
 
-**Guest:**
-Receive Link → View Profile → Follow Professional → Receive Updates → Visit Professional
+**Guest (link-first, primary):**
+Receive Link → View Profile → Sign Up as Guest → Follow Professional → Receive Updates → Visit Professional
+
+**Guest (direct, secondary):**
+Open App → Create Guest Account → Receive/Open Link → View Profile → Follow Professional → Receive Updates → Visit Professional
 
 ---
 
@@ -335,7 +338,7 @@ Planned after MVP:
 - Privacy by default
 - Discoverability is optional
 - Mobile-first experience
-- Invitation-first onboarding
+- Link-first discovery is the primary guest onboarding path; direct guest signup from the Welcome screen is also supported
 - Simplicity over feature overload
 - Trust over growth
 
@@ -492,6 +495,7 @@ Before approving a feature, ask:
 - Privacy is the default
 - Discoverability is optional
 - Profile links replace QR codes
+- After guest signup via a professional profile link, the app returns the guest to that profile so they can follow immediately
 - Professionals own their audience
 - Restaurants are partners
 - Mobile-first design

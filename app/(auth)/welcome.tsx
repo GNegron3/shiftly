@@ -1,7 +1,16 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
+import { useState } from 'react';
 
 export default function WelcomeScreen() {
+  const [devProfileId, setDevProfileId] = useState('');
+
+  const handleDevOpen = () => {
+    const id = devProfileId.trim();
+    if (!id) return;
+    router.push(`/pro/${id}` as any);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -34,12 +43,40 @@ export default function WelcomeScreen() {
           >
             <Text style={styles.secondaryButtonText}>Log In</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.tertiaryButton}
+            activeOpacity={0.85}
+            onPress={() => router.push('/signup-guest')}
+          >
+            <Text style={styles.tertiaryButtonText}>Join as a Guest</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Guest note — no sign up button on purpose */}
-        <Text style={styles.guestNote}>
-          Joining as a guest? Ask your professional for an invite link.
-        </Text>
+        {/* Dev-only: open a public profile by UUID without a share link */}
+        {__DEV__ && (
+          <View style={styles.devPanel}>
+            <Text style={styles.devLabel}>DEV — Open Profile by ID</Text>
+            <View style={styles.devRow}>
+              <TextInput
+                style={styles.devInput}
+                placeholder="Paste professional UUID"
+                placeholderTextColor="#4B5563"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={devProfileId}
+                onChangeText={setDevProfileId}
+              />
+              <TouchableOpacity
+                style={styles.devButton}
+                onPress={handleDevOpen}
+                activeOpacity={0.75}
+              >
+                <Text style={styles.devButtonText}>Open</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
       </View>
     </SafeAreaView>
@@ -110,10 +147,55 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#F9FAFB',
   },
-  guestNote: {
-    fontSize: 13,
+  tertiaryButton: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    width: '100%',
+  },
+  tertiaryButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
     color: '#6B7280',
-    textAlign: 'center',
-    marginTop: 8,
+  },
+  devPanel: {
+    width: '100%',
+    borderTopWidth: 1,
+    borderTopColor: '#1F2937',
+    paddingTop: 16,
+    gap: 8,
+  },
+  devLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#374151',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  devRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  devInput: {
+    flex: 1,
+    backgroundColor: '#0D1117',
+    borderWidth: 1,
+    borderColor: '#1F2937',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  devButton: {
+    backgroundColor: '#1F2937',
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    justifyContent: 'center',
+  },
+  devButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4B5563',
   },
 });

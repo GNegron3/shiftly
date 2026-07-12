@@ -13,12 +13,28 @@ Shiftly uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **Schedule service** — `services/scheduleService.ts`; responsibilities: `getSchedule`, `saveSchedule`; all Supabase access for the schedule feature centralized here; `DayInput` type exported for use by the hook
 - **`useSchedule` hook** — `hooks/useSchedule.ts`; encapsulates schedule fetch, form state (`DayInput[]`), day/note mutation, validation (custom shifts require a note), save, and loading/saving/error states
+- **Following System** — `guest_profiles` and `follows` tables with RLS; `types/GuestProfile.ts`, `types/Follow.ts`; `services/guestProfileService.ts`, `services/followService.ts`; `hooks/useGuestProfile.ts`, `hooks/useFollow.ts` (optimistic toggle with rollback); guest signup wired to Supabase Auth with `role: 'guest'` metadata; guest profile created server-side via `handle_new_guest_user` trigger; public profile follow button live (unauthenticated → sign up CTA, pro → hidden, guest → toggle); guest home screen replaced with Following Feed showing followed professionals and today's shift
+- **Guest signup entry on Welcome screen** — "Join as a Guest" tertiary button added to `app/(auth)/welcome.tsx`; guests can now sign up directly without a professional profile link
+- **`returnTo` flow** — unauthenticated guests tapping "Sign up to Follow" on a professional's profile are routed to guest signup with `returnTo=/pro/<id>`; after successful signup or login, the app returns them to that profile; `returnTo` survives email confirmation via `lib/pendingReturnTo.ts` (SecureStore-backed); in-memory param takes precedence over stored value; destination validated against `/pro/<uuid>` pattern before use; stored value cleared after any login regardless of use
+- **`lib/pendingReturnTo.ts`** — SecureStore utility for persisting and recovering a pending post-login route; validates against `/pro/<uuid>` pattern; always cleared after login
+- **Development profile navigator** — `__DEV__`-gated UUID input and Open button at the bottom of `app/(auth)/welcome.tsx`; allows testers to open a public professional profile while logged out without a shareable link; never renders in production builds
 
 ### Changed
 
 - **Schedule screen** — `app/(pro)/schedule.tsx` refactored from inline Supabase calls to `useSchedule` hook; duplicate local type definitions removed; fetch error now surfaces a dedicated error screen with back navigation
 - **`profileService.ts`** — `getProSchedule` removed; schedule access is now owned by `scheduleService.ts`
-- **Public profile screen** — `app/pro/[id].tsx` updated to import `getSchedule` from `scheduleService` instead of `profileService`
+- **Public profile screen** — `app/pro/[id].tsx` updated to import `getSchedule` from `scheduleService` instead of `profileService`; follow button replaced with live follow/unfollow; unauthenticated CTA updated to "Sign up to Follow" (full-width primary style)
+- **Guest signup** — `app/(auth)/signup-guest.tsx` fully wired to Supabase Auth; guest profile creation moved to server-side trigger; `returnTo` param read and persisted through confirmation flow
+- **Login screen** — `app/(auth)/login.tsx` reads `returnTo` param and stored pending destination; redirects guest users after login; clears stored destination unconditionally
+
+### Fixed
+
+- **Session guards** — `app/(pro)/_layout.tsx` and `app/(guest)/_layout.tsx` now watch session state and redirect to `/welcome` when session becomes null; previously, sign-out from inside a protected group left stale UI visible and caused edit screens to open with empty values
+- **Guest profile creation race condition** — `createGuestProfile` was called client-side immediately after `supabase.auth.signUp()` with no active session; RLS `WITH CHECK (auth.uid() = id)` evaluated `auth.uid()` as null and rejected the insert; moved to a `SECURITY DEFINER` trigger (`handle_new_guest_user`) that runs server-side on `auth.users` INSERT
+
+### Known Limitations
+
+- **Share Profile** — currently shares a plain-text UUID with no usable URL. `tapindev://` custom scheme is registered in `app.json` but is not resolvable in Expo Go (requires a standalone build) and only works when the recipient already has the app installed. Universal links, deferred deep linking, and App Store install prompts require a production domain and deployment infrastructure. Share Profile is unblocked only after a production URL and redirect layer exist.
 
 ---
 

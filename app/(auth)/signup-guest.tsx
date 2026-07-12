@@ -10,12 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { createGuestProfile } from '../../services/guestProfileService';
+import { isValidReturnTo, setPendingReturnTo } from '../../lib/pendingReturnTo';
 
 export default function SignUpGuestScreen() {
+  const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -56,22 +58,24 @@ export default function SignUpGuestScreen() {
       return;
     }
 
-    if (data.user) {
-      try {
-        await createGuestProfile({ id: data.user.id, full_name: fullName.trim() });
-      } catch {
-        setError('Account created but profile setup failed. Please log in and try again.');
-        setLoading(false);
-        return;
-      }
-    }
-
     setLoading(false);
 
     if (!data.session) {
+      // Persist returnTo so it survives the external email confirmation flow.
+      if (isValidReturnTo(returnTo)) {
+        await setPendingReturnTo(returnTo);
+      }
       setAwaitingConfirmation(true);
     } else {
-      router.replace('/');
+      router.replace((isValidReturnTo(returnTo) ? returnTo : '/') as any);
+    }
+  };
+
+  const handleGoToLogin = () => {
+    if (returnTo) {
+      router.replace({ pathname: '/login', params: { returnTo } } as any);
+    } else {
+      router.replace('/login');
     }
   };
 
@@ -89,7 +93,7 @@ export default function SignUpGuestScreen() {
           <TouchableOpacity
             style={styles.primaryButton}
             activeOpacity={0.85}
-            onPress={() => router.replace('/login')}
+            onPress={handleGoToLogin}
           >
             <Text style={styles.primaryButtonText}>Go to Log In</Text>
           </TouchableOpacity>
@@ -191,7 +195,7 @@ export default function SignUpGuestScreen() {
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => router.push('/login')}>
+            <TouchableOpacity onPress={handleGoToLogin}>
               <Text style={styles.footerLink}>Log In</Text>
             </TouchableOpacity>
           </View>

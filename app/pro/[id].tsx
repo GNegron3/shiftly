@@ -118,9 +118,9 @@ export default function PublicProfileScreen() {
         <TouchableOpacity
           style={styles.followButton}
           activeOpacity={0.85}
-          onPress={() => router.push('/welcome')}
+          onPress={() => router.push({ pathname: '/signup-guest', params: { returnTo: `/pro/${id}` } } as any)}
         >
-          <Text style={styles.followButtonText}>Sign up to follow</Text>
+          <Text style={styles.followButtonText}>Sign up to Follow</Text>
         </TouchableOpacity>
       );
     }
@@ -357,6 +357,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 18,
     alignItems: 'center',
+    width: '100%',
     marginTop: 8,
   },
   followButtonActive: {
