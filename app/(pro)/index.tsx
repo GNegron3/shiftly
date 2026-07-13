@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   SafeAreaView,
+  ScrollView,
   Share,
   StyleSheet,
   Text,
@@ -11,6 +12,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/auth';
+import { useFollowers } from '../../hooks/useFollowers';
 
 type Profile = {
   full_name: string;
@@ -39,6 +41,7 @@ export default function ProDashboard() {
   const [schedule, setSchedule] = useState<ScheduleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
+  const { followers, refresh: refreshFollowers } = useFollowers(session?.user.id ?? null);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,6 +49,7 @@ export default function ProDashboard() {
 
       const loadData = async () => {
         setLoadingData(true);
+        refreshFollowers();
 
         const [profileResult, scheduleResult] = await Promise.all([
           supabase
@@ -66,7 +70,7 @@ export default function ProDashboard() {
       };
 
       loadData();
-    }, [session])
+    }, [session, refreshFollowers])
   );
 
   const isProfileComplete = !!(
@@ -112,7 +116,11 @@ export default function ProDashboard() {
             <ActivityIndicator color="#F9FAFB" />
           </View>
         ) : (
-          <View style={styles.body}>
+          <ScrollView
+            style={styles.body}
+            contentContainerStyle={styles.bodyContent}
+            showsVerticalScrollIndicator={false}
+          >
 
             {/* Welcome */}
             <View style={styles.welcomeBlock}>
@@ -177,6 +185,22 @@ export default function ProDashboard() {
               </View>
             )}
 
+            {/* Followers card */}
+            <TouchableOpacity
+              style={styles.card}
+              activeOpacity={0.85}
+              onPress={() => router.push('/(pro)/followers')}
+            >
+              <Text style={styles.cardTitle}>Followers</Text>
+              <Text style={styles.followerCount}>{followers.length}</Text>
+              <Text style={styles.cardBody}>
+                {followers.length === 1
+                  ? '1 guest is following you.'
+                  : `${followers.length} guests are following you.`}
+              </Text>
+              <Text style={styles.cardLink}>View all →</Text>
+            </TouchableOpacity>
+
             {/* Schedule card */}
             <View style={[styles.card, hasSchedule && styles.cardComplete]}>
               {hasSchedule ? (
@@ -222,7 +246,7 @@ export default function ProDashboard() {
               )}
             </View>
 
-          </View>
+          </ScrollView>
         )}
       </View>
     </SafeAreaView>
@@ -262,7 +286,10 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
+  },
+  bodyContent: {
     gap: 16,
+    paddingBottom: 32,
   },
   welcomeBlock: {
     marginBottom: 8,
@@ -341,5 +368,16 @@ const styles = StyleSheet.create({
   scheduleShiftOff: {
     color: '#4B5563',
     fontWeight: '400',
+  },
+  followerCount: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#F9FAFB',
+    letterSpacing: -1,
+  },
+  cardLink: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 4,
   },
 });

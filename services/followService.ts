@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { ProfessionalProfile } from '../types/Profile';
+import { Follower } from '../types/Follower';
 
 export async function getFollowStatus(
   guestId: string,
@@ -55,4 +56,24 @@ export async function getFollowing(
   return (data ?? [])
     .map((row) => row.profiles as unknown as ProfessionalProfile | null)
     .filter((p): p is ProfessionalProfile => p !== null);
+}
+
+export async function getFollowers(
+  professionalId: string,
+): Promise<Follower[]> {
+  const { data, error } = await supabase
+    .from('follows')
+    .select('created_at, guest_profiles:guest_id ( id, full_name )')
+    .eq('professional_id', professionalId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+
+  return (data ?? [])
+    .map((row) => {
+      const gp = row.guest_profiles as unknown as { id: string; full_name: string } | null;
+      if (!gp) return null;
+      return { id: gp.id, full_name: gp.full_name, followed_at: row.created_at } satisfies Follower;
+    })
+    .filter((f): f is Follower => f !== null);
 }
