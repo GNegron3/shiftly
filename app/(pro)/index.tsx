@@ -13,6 +13,7 @@ import { useCallback, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/auth';
 import { useFollowers } from '../../hooks/useFollowers';
+import { getProfileUrl } from '../../lib/profileUrl';
 
 type Profile = {
   full_name: string;
@@ -90,8 +91,11 @@ export default function ProDashboard() {
 
   const handleShareProfile = async () => {
     if (!session) return;
+    const url = getProfileUrl(session.user.id);
     await Share.share({
-      message: `Check out my Shiftly profile!\n\nProfile ID: ${session.user.id}`,
+      message: url
+        ? `Check out my Shiftly profile!\n\n${url}`
+        : `Check out my Shiftly profile! (Profile ID: ${session.user.id})`,
       title: 'Share My Shiftly Profile',
     });
   };

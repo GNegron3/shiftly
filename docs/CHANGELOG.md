@@ -11,6 +11,13 @@ Shiftly uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Shareable Profile URLs** — `lib/profileUrl.ts` centralizes URL generation; `getProfileUrl(proId)` returns `${EXPO_PUBLIC_PROFILE_BASE_URL}/pro/<id>` and is the single source of truth for all share and QR features; returns empty string when base URL is not configured so callers can guard gracefully
+- **Unified Share section** — profile edit screen (`app/(pro)/profile.tsx`) now shows a unified Share section (visible when profile is complete) containing a Share button (native share sheet), Copy Link button (copies profile URL to clipboard with 2-second confirmation), and a QR code (encodes the same profile URL via `react-native-qrcode-svg`); all three reference `getProfileUrl`, no duplicated URL logic; section shows a pending state when `EXPO_PUBLIC_PROFILE_BASE_URL` is not set
+- **EAS project configuration** — `eas.json` added with `development`, `preview`, and `production` build profiles; `eas-cli` added as a dev dependency; project must be linked via `eas init` before first deploy
+- **Platform-specific Supabase auth storage** — `lib/supabase.ts` now uses `localStorage` on web and `expo-secure-store` on native; explicit, not silent; future-proofs web authentication flows
+
+### Changed
+
 - **Schedule service** — `services/scheduleService.ts`; responsibilities: `getSchedule`, `saveSchedule`; all Supabase access for the schedule feature centralized here; `DayInput` type exported for use by the hook
 - **`useSchedule` hook** — `hooks/useSchedule.ts`; encapsulates schedule fetch, form state (`DayInput[]`), day/note mutation, validation (custom shifts require a note), save, and loading/saving/error states
 - **Following System** — `guest_profiles` and `follows` tables with RLS; `types/GuestProfile.ts`, `types/Follow.ts`, `types/Follower.ts`; `services/guestProfileService.ts`, `services/followService.ts` (`getFollowers`, `getFollowing`, `followProfessional`, `unfollowProfessional`, `getFollowStatus`); `hooks/useGuestProfile.ts`, `hooks/useFollow.ts` (optimistic toggle with rollback), `hooks/useFollowers.ts`; guest signup wired to Supabase Auth with `role: 'guest'` metadata; guest profile created server-side via `handle_new_guest_user` trigger; public profile follow button live (unauthenticated → sign up CTA, pro → hidden, guest → toggle); guest home screen replaced with Following Feed showing followed professionals and today's shift
@@ -35,7 +42,9 @@ Shiftly uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Known Limitations
 
-- **Share Profile** — currently shares a plain-text UUID with no usable URL. `tapindev://` custom scheme is registered in `app.json` but is not resolvable in Expo Go (requires a standalone build) and only works when the recipient already has the app installed. Universal links, deferred deep linking, and App Store install prompts require a production domain and deployment infrastructure. Share Profile is unblocked only after a production URL and redirect layer exist.
+- **Share Profile base URL** — `EXPO_PUBLIC_PROFILE_BASE_URL` must be set before share, copy link, and QR features are active. The value is the EAS Hosting URL obtained after running `eas init` → `eas deploy`. Until set, the profile screen shows a pending state and the dashboard falls back to sharing a plain-text profile ID.
+- **Universal Links / App Links** — tapping a profile URL in a message will open the browser, not the app. iOS Universal Links and Android App Links require `apple-app-site-association` and `assetlinks.json` on a production domain plus a native EAS build. Deferred until a custom domain is confirmed and an App Store build is ready.
+- **Web profile page content** — the deployed EAS Hosting page at `/pro/<id>` renders the React app shell; profile data is fetched client-side. Link previews in iMessage, Slack, and Twitter will show a generic title, not the professional's name. Open Graph meta tags are a post-MVP concern.
 
 ---
 

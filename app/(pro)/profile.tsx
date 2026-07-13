@@ -13,8 +13,11 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
+import * as Clipboard from 'expo-clipboard';
+import QRCode from 'react-native-qrcode-svg';
 import { useAuth } from '../../context/auth';
 import { useProfile } from '../../hooks/useProfile';
+import { getProfileUrl } from '../../lib/profileUrl';
 
 export default function ProfileScreen() {
   const { session } = useAuth();
@@ -29,6 +32,7 @@ export default function ProfileScreen() {
   const [bio, setBio] = useState('');
   const [validationError, setValidationError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
 
   // Pre-populate form once profile loads. Falls back to signup metadata for new users.
   useEffect(() => {
@@ -85,12 +89,23 @@ export default function ProfileScreen() {
     }
   };
 
+  const profileUrl = session ? getProfileUrl(session.user.id) : '';
+
   const handleShare = async () => {
     if (!session) return;
     await Share.share({
-      message: `Check out my Shiftly profile!\n\nProfile ID: ${session.user.id}`,
+      message: profileUrl
+        ? `Check out my Shiftly profile!\n\n${profileUrl}`
+        : `Check out my Shiftly profile! (Profile ID: ${session.user.id})`,
       title: 'Share My Shiftly Profile',
     });
+  };
+
+  const handleCopyLink = async () => {
+    if (!profileUrl) return;
+    await Clipboard.setStringAsync(profileUrl);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
   };
 
   const displayError = validationError || saveError || '';
@@ -233,13 +248,52 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           {isComplete && (
-            <TouchableOpacity
-              style={styles.shareButton}
-              activeOpacity={0.85}
-              onPress={handleShare}
-            >
-              <Text style={styles.shareButtonText}>Share My Profile</Text>
-            </TouchableOpacity>
+            <View style={styles.shareSection}>
+              <Text style={styles.shareSectionLabel}>SHARE YOUR PROFILE</Text>
+
+              <View style={styles.shareButtonRow}>
+                <TouchableOpacity
+                  style={styles.shareActionButton}
+                  activeOpacity={0.85}
+                  onPress={handleShare}
+                >
+                  <Text style={styles.shareActionText}>Share</Text>
+                </TouchableOpacity>
+
+                {!!profileUrl && (
+                  <TouchableOpacity
+                    style={[
+                      styles.shareActionButton,
+                      copySuccess && styles.shareActionButtonSuccess,
+                    ]}
+                    activeOpacity={0.85}
+                    onPress={handleCopyLink}
+                  >
+                    <Text style={styles.shareActionText}>
+                      {copySuccess ? 'Copied!' : 'Copy Link'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              {!!profileUrl && (
+                <View style={styles.qrContainer}>
+                  <QRCode
+                    value={profileUrl}
+                    size={180}
+                    backgroundColor="#1F2937"
+                    color="#F9FAFB"
+                  />
+                  <Text style={styles.qrHint}>Guests can scan to open your profile</Text>
+                </View>
+              )}
+
+              {!profileUrl && (
+                <Text style={styles.urlPendingText}>
+                  Deploy to EAS Hosting to enable link sharing and QR codes.
+                </Text>
+              )}
+            </View>
           )}
         </ScrollView>
       </KeyboardAvoidingView>
@@ -371,18 +425,59 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#111827',
   },
-  shareButton: {
+  shareSection: {
     marginTop: 12,
-    paddingVertical: 18,
-    borderRadius: 16,
+    gap: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#1F2937',
+    paddingTop: 24,
+  },
+  shareSectionLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#6B7280',
+    letterSpacing: 1.5,
+  },
+  shareButtonRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  shareActionButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
-    width: '100%',
     borderWidth: 1,
     borderColor: '#374151',
+    backgroundColor: '#1F2937',
   },
-  shareButtonText: {
-    fontSize: 16,
+  shareActionButtonSuccess: {
+    borderColor: '#065F46',
+    backgroundColor: '#071C15',
+  },
+  shareActionText: {
+    fontSize: 15,
     fontWeight: '600',
     color: '#F9FAFB',
+  },
+  qrContainer: {
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#1F2937',
+    borderWidth: 1,
+    borderColor: '#374151',
+    borderRadius: 16,
+    padding: 24,
+  },
+  qrHint: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+  urlPendingText: {
+    fontSize: 13,
+    color: '#4B5563',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });

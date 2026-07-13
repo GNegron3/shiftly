@@ -494,7 +494,7 @@ Before approving a feature, ask:
 
 - Privacy is the default
 - Discoverability is optional
-- Profile links replace QR codes
+- Profile links are the canonical sharing and discovery mechanism. Every professional has a unique HTTPS profile URL. QR codes are a convenience layer that encodes the same profile URL for in-person sharing. The URL is the authoritative identity; QR codes are never a substitute for it
 - After guest signup via a professional profile link, the app returns the guest to that profile so they can follow immediately
 - Professionals own their audience
 - Restaurants are partners
