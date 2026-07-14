@@ -17,7 +17,7 @@ import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
 import { useAuth } from '../../context/auth';
 import { useProfile } from '../../hooks/useProfile';
-import { getProfileUrl } from '../../lib/profileUrl';
+import { getProfileUrl, getProfileShareContent } from '../../lib/profileUrl';
 
 export default function ProfileScreen() {
   const { session } = useAuth();
@@ -93,12 +93,17 @@ export default function ProfileScreen() {
 
   const handleShare = async () => {
     if (!session) return;
-    await Share.share({
-      message: profileUrl
-        ? `Check out my Shiftly profile!\n\n${profileUrl}`
-        : `Check out my Shiftly profile! (Profile ID: ${session.user.id})`,
-      title: 'Share My Shiftly Profile',
-    });
+    const content = getProfileShareContent(session.user.id);
+    if (!content) return;
+    try {
+      await Share.share({
+        message: content.message,
+        url: content.url,
+        title: 'Share My Shiftly Profile',
+      });
+    } catch {
+      // share sheet dismissed or unavailable
+    }
   };
 
   const handleCopyLink = async () => {
