@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import { kvStorage } from './keyValueStorage';
 
 const KEY = 'pending_return_to';
 
@@ -11,13 +11,13 @@ export function isValidReturnTo(value: string | undefined | null): value is stri
 }
 
 export async function setPendingReturnTo(value: string): Promise<void> {
-  await SecureStore.setItemAsync(KEY, value);
+  await kvStorage.setItem(KEY, value);
 }
 
 export async function getPendingReturnTo(): Promise<string | null> {
-  return SecureStore.getItemAsync(KEY);
+  return kvStorage.getItem(KEY);
 }
 
 export async function clearPendingReturnTo(): Promise<void> {
-  await SecureStore.deleteItemAsync(KEY);
+  await kvStorage.removeItem(KEY);
 }

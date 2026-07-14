@@ -1,39 +1,26 @@
 import { createClient } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
+import { kvStorage } from './keyValueStorage';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
-function createWebStorageAdapter() {
-  return {
-    getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),
-    setItem: (key: string, value: string) => {
-      localStorage.setItem(key, value);
-      return Promise.resolve();
-    },
-    removeItem: (key: string) => {
-      localStorage.removeItem(key);
-      return Promise.resolve();
-    },
-  };
-}
-
-const ExpoSecureStoreAdapter = {
-  getItem: (key: string) => SecureStore.getItemAsync(key),
-  setItem: (key: string, value: string) => SecureStore.setItemAsync(key, value),
-  removeItem: (key: string) => SecureStore.deleteItemAsync(key),
-};
-
-const storage = Platform.OS === 'web'
-  ? createWebStorageAdapter()
-  : ExpoSecureStoreAdapter;
+// True only during `expo export --platform web` (Node, no window).
+// Supabase Realtime would otherwise fall back to globalThis.WebSocket,
+// triggering Node 20's ExperimentalWarning. A truthy transport class
+// prevents that fallback; the class is never instantiated during export.
+const isStaticRender = Platform.OS === 'web' && typeof window === 'undefined';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage,
-    autoRefreshToken: true,
-    persistSession: true,
+    storage: kvStorage,
+    autoRefreshToken: !isStaticRender,
+    persistSession: !isStaticRender,
     detectSessionInUrl: false,
   },
+  ...(isStaticRender && {
+    realtime: {
+      transport: class NoOpWebSocket {} as unknown as typeof WebSocket,
+    },
+  }),
 });

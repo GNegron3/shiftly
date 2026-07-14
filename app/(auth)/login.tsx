@@ -54,9 +54,16 @@ export default function LoginScreen() {
 
     const role = data?.user?.user_metadata?.role;
 
-    // Read stored destination first, then clear it — always, regardless of role or use.
-    const stored = await getPendingReturnTo();
-    await clearPendingReturnTo();
+    // Read and clear any stored return destination.
+    // Wrapped in try/catch so a storage failure cannot strand the user
+    // after a successful login.
+    let stored: string | null = null;
+    try {
+      stored = await getPendingReturnTo();
+      await clearPendingReturnTo();
+    } catch {
+      // storage unavailable; proceed without a stored destination
+    }
 
     // In-memory param takes precedence over stored value; both must pass validation.
     const destination =

@@ -62,8 +62,13 @@ export default function SignUpGuestScreen() {
 
     if (!data.session) {
       // Persist returnTo so it survives the external email confirmation flow.
+      // Wrapped in try/catch so a storage failure does not block the flow.
       if (isValidReturnTo(returnTo)) {
-        await setPendingReturnTo(returnTo);
+        try {
+          await setPendingReturnTo(returnTo);
+        } catch {
+          // storage unavailable; returnTo will not survive email confirmation
+        }
       }
       setAwaitingConfirmation(true);
     } else {
