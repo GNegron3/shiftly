@@ -13,6 +13,7 @@ import {
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { Colors } from '../../constants/theme';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -51,7 +52,7 @@ export default function ForgotPasswordScreen() {
           <Text style={styles.confirmSubtitle}>
             If an account exists for{' '}
             <Text style={styles.emailHighlight}>{email}</Text>
-            , you'll receive a password reset link shortly.
+            {", you'll receive a password reset link shortly."}
           </Text>
           <TouchableOpacity
             style={styles.primaryButton}
@@ -86,7 +87,7 @@ export default function ForgotPasswordScreen() {
           <View style={styles.header}>
             <Text style={styles.heading}>Reset your password</Text>
             <Text style={styles.subtitle}>
-              Enter the email on your account and we'll send you a reset link.
+              {"Enter the email on your account and we'll send you a reset link."}
             </Text>
           </View>
 
@@ -96,7 +97,7 @@ export default function ForgotPasswordScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="you@example.com"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -115,7 +116,7 @@ export default function ForgotPasswordScreen() {
             disabled={loading}
           >
             {loading
-              ? <ActivityIndicator color="#111827" />
+              ? <ActivityIndicator color={Colors.surface} />
               : <Text style={styles.primaryButtonText}>Send Reset Link</Text>
             }
           </TouchableOpacity>
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   container: {
     flexGrow: 1,
@@ -151,12 +152,12 @@ const styles = StyleSheet.create({
   },
   confirmSubtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
   },
   emailHighlight: {
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
   backButton: {
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   backText: {
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     fontSize: 16,
   },
   header: {
@@ -173,13 +174,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     lineHeight: 24,
   },
   form: {
@@ -192,26 +193,26 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#D1D5DB',
+    color: Colors.textSecondary,
   },
   input: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.borderMedium,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
     fontSize: 16,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   errorText: {
-    color: '#F87171',
+    color: Colors.error,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
   },
   primaryButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
@@ -223,6 +224,6 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
 });

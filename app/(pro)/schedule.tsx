@@ -14,6 +14,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { useAuth } from '../../context/auth';
 import { useSchedule } from '../../hooks/useSchedule';
+import { Colors } from '../../constants/theme';
 
 const DAYS = [
   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
@@ -49,7 +50,7 @@ export default function ScheduleScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
-          <ActivityIndicator color="#F9FAFB" />
+          <ActivityIndicator color={Colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -118,7 +119,7 @@ export default function ScheduleScreen() {
                   <TextInput
                     style={styles.customInput}
                     placeholder="e.g. 3 PM, 4 PM – close"
-                    placeholderTextColor="#4B5563"
+                    placeholderTextColor={Colors.textSubtle}
                     value={schedule[i].note}
                     onChangeText={text => setNote(i, text)}
                     returnKeyType="done"
@@ -138,7 +139,7 @@ export default function ScheduleScreen() {
             disabled={saving}
           >
             {saving
-              ? <ActivityIndicator color="#111827" />
+              ? <ActivityIndicator color={Colors.surface} />
               : <Text style={styles.saveButtonText}>Save Schedule</Text>
             }
           </TouchableOpacity>
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   centered: {
     flex: 1,
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   backText: {
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     fontSize: 16,
   },
   header: {
@@ -182,13 +183,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
     marginBottom: 6,
   },
   subtitle: {
     fontSize: 15,
-    color: '#6B7280',
+    color: Colors.textSecondary,
   },
   dayList: {
     gap: 20,
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
   dayLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     letterSpacing: 0.3,
   },
   pillRow: {
@@ -212,49 +213,49 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
   },
   pillSelected: {
-    backgroundColor: '#F9FAFB',
-    borderColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   pillText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#6B7280',
+    color: Colors.textMuted,
   },
   pillTextSelected: {
-    color: '#111827',
+    color: Colors.surface,
     fontWeight: '700',
   },
   customInput: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.borderMedium,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 15,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     marginTop: 2,
   },
   errorText: {
-    color: '#F87171',
+    color: Colors.error,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
   },
   successText: {
-    color: '#34D399',
+    color: Colors.primary,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
     fontWeight: '500',
   },
   saveButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
@@ -266,6 +267,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
 });

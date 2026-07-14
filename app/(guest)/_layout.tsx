@@ -1,6 +1,7 @@
 import { Tabs, router } from 'expo-router';
 import { useEffect } from 'react';
 import { useAuth } from '../../context/auth';
+import { Colors } from '../../constants/theme';
 
 export default function GuestLayout() {
   const { session, loading } = useAuth();
@@ -15,9 +16,9 @@ export default function GuestLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: '#111827', borderTopColor: '#1F2937' },
-        tabBarActiveTintColor: '#F9FAFB',
-        tabBarInactiveTintColor: '#6B7280',
+        tabBarStyle: { backgroundColor: Colors.surface, borderTopColor: Colors.border },
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.textSubtle,
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Feed' }} />

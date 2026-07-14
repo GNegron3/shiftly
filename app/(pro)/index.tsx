@@ -2,7 +2,6 @@ import {
   ActivityIndicator,
   SafeAreaView,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,7 +12,8 @@ import { useCallback, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/auth';
 import { useFollowers } from '../../hooks/useFollowers';
-import { getProfileShareContent } from '../../lib/profileUrl';
+import { ProfileQRModal } from '../../components/ProfileQRModal';
+import { Colors } from '../../constants/theme';
 
 type Profile = {
   full_name: string;
@@ -42,6 +42,7 @@ export default function ProDashboard() {
   const [schedule, setSchedule] = useState<ScheduleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
   const { followers, refresh: refreshFollowers } = useFollowers(session?.user.id ?? null);
 
   useFocusEffect(
@@ -89,23 +90,17 @@ export default function ProDashboard() {
     await signOut();
   };
 
-  const handleShareProfile = async () => {
-    if (!session) return;
-    const content = getProfileShareContent(session.user.id);
-    if (!content) return;
-    try {
-      await Share.share({
-        message: content.message,
-        url: content.url,
-        title: 'Share My Shiftly Profile',
-      });
-    } catch {
-      // share sheet dismissed or unavailable
-    }
-  };
+  const handleShareProfile = () => setShowQRModal(true);
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {session && (
+        <ProfileQRModal
+          proId={session.user.id}
+          visible={showQRModal}
+          onClose={() => setShowQRModal(false)}
+        />
+      )}
       <View style={styles.container}>
 
         {/* Header row */}
@@ -113,7 +108,7 @@ export default function ProDashboard() {
           <Text style={styles.eyebrow}>PRO DASHBOARD</Text>
           <TouchableOpacity onPress={handleSignOut} disabled={signingOut}>
             {signingOut
-              ? <ActivityIndicator color="#6B7280" size="small" />
+              ? <ActivityIndicator color={Colors.textMuted} size="small" />
               : <Text style={styles.logoutText}>Log Out</Text>
             }
           </TouchableOpacity>
@@ -121,7 +116,7 @@ export default function ProDashboard() {
 
         {loadingData ? (
           <View style={styles.centered}>
-            <ActivityIndicator color="#F9FAFB" />
+            <ActivityIndicator color={Colors.primary} />
           </View>
         ) : (
           <ScrollView
@@ -264,7 +259,7 @@ export default function ProDashboard() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
@@ -280,12 +275,12 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#6B7280',
+    color: Colors.textMuted,
     letterSpacing: 1.5,
   },
   logoutText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: Colors.textMuted,
   },
   centered: {
     flex: 1,
@@ -306,43 +301,48 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
   },
   welcomeSub: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
   },
   card: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     borderRadius: 16,
     padding: 20,
     gap: 8,
+    shadowColor: Colors.textPrimary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   cardIncomplete: {
-    borderColor: '#92400E',
-    backgroundColor: '#1C1409',
+    borderColor: Colors.cardWarningBorder,
+    backgroundColor: Colors.cardWarning,
   },
   cardComplete: {
-    borderColor: '#065F46',
-    backgroundColor: '#071C15',
+    borderColor: Colors.cardSuccessBorder,
+    backgroundColor: Colors.cardSuccess,
   },
   cardTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   cardBody: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     lineHeight: 20,
   },
   cardButton: {
     marginTop: 8,
     alignSelf: 'flex-start',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   cardButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
   scheduleGrid: {
     gap: 5,
@@ -365,27 +365,27 @@ const styles = StyleSheet.create({
   scheduleDay: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6B7280',
+    color: Colors.textMuted,
     width: 32,
   },
   scheduleShift: {
     fontSize: 13,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
   scheduleShiftOff: {
-    color: '#4B5563',
+    color: Colors.textSubtle,
     fontWeight: '400',
   },
   followerCount: {
     fontSize: 36,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.primary,
     letterSpacing: -1,
   },
   cardLink: {
     fontSize: 13,
-    color: '#6B7280',
+    color: Colors.textMuted,
     marginTop: 4,
   },
 });

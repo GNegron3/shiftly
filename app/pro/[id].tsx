@@ -15,6 +15,7 @@ import { ProfessionalProfile } from '../../types/Profile';
 import { DaySchedule } from '../../types/Schedule';
 import { useAuth } from '../../context/auth';
 import { useFollow } from '../../hooks/useFollow';
+import { Colors } from '../../constants/theme';
 
 const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -86,7 +87,7 @@ export default function PublicProfileScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
-          <ActivityIndicator color="#F9FAFB" />
+          <ActivityIndicator color={Colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -128,7 +129,7 @@ export default function PublicProfileScreen() {
     if (followLoading) {
       return (
         <View style={[styles.followButton, styles.followButtonDisabled]}>
-          <ActivityIndicator color="#9CA3AF" />
+          <ActivityIndicator color={Colors.textMuted} />
         </View>
       );
     }
@@ -141,7 +142,7 @@ export default function PublicProfileScreen() {
         disabled={toggling}
       >
         {toggling
-          ? <ActivityIndicator color={following ? '#111827' : '#F9FAFB'} />
+          ? <ActivityIndicator color={following ? Colors.primary : Colors.surface} />
           : (
             <Text style={[styles.followButtonText, following && styles.followButtonTextActive]}>
               {following ? 'Following' : 'Follow'}
@@ -232,7 +233,7 @@ export default function PublicProfileScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   centered: {
     flex: 1,
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   backText: {
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     fontSize: 16,
   },
   profileHeader: {
@@ -264,9 +265,9 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#1F2937',
-    borderWidth: 1,
-    borderColor: '#374151',
+    backgroundColor: Colors.primarySubtle,
+    borderWidth: 2,
+    borderColor: Colors.cardSuccessBorder,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -274,32 +275,32 @@ const styles = StyleSheet.create({
   avatarInitials: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.primary,
   },
   name: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
     textAlign: 'center',
   },
   trade: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     textAlign: 'center',
   },
   venuePill: {
     marginTop: 4,
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
   },
   venueText: {
     fontSize: 13,
-    color: '#D1D5DB',
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
   section: {
@@ -309,22 +310,27 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#6B7280',
+    color: Colors.textMuted,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
   bioText: {
     fontSize: 15,
-    color: '#D1D5DB',
+    color: Colors.textSecondary,
     lineHeight: 22,
   },
   scheduleCard: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     borderRadius: 14,
     padding: 16,
     gap: 8,
+    shadowColor: Colors.textPrimary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   scheduleRow: {
     flexDirection: 'row',
@@ -334,26 +340,26 @@ const styles = StyleSheet.create({
   scheduleDay: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6B7280',
+    color: Colors.textMuted,
     width: 32,
   },
   scheduleShift: {
     fontSize: 14,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
   scheduleShiftOff: {
-    color: '#4B5563',
+    color: Colors.textSubtle,
     fontWeight: '400',
   },
   emptyScheduleText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: Colors.textMuted,
     textAlign: 'center',
     paddingVertical: 8,
   },
   followButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     borderRadius: 16,
     paddingVertical: 18,
     alignItems: 'center',
@@ -361,39 +367,39 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   followButtonActive: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
   },
   followButtonDisabled: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     opacity: 0.6,
   },
   followButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
   followButtonTextActive: {
-    color: '#9CA3AF',
+    color: Colors.primary,
   },
   footerText: {
     fontSize: 12,
-    color: '#374151',
+    color: Colors.textSubtle,
     textAlign: 'center',
     marginTop: 32,
   },
   notFoundTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     textAlign: 'center',
   },
   notFoundBody: {
     fontSize: 15,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
   },
@@ -403,11 +409,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
   },
   backLinkText: {
     fontSize: 15,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
 });

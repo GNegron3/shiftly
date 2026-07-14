@@ -4,7 +4,6 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -13,11 +12,10 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import * as Clipboard from 'expo-clipboard';
-import QRCode from 'react-native-qrcode-svg';
 import { useAuth } from '../../context/auth';
 import { useProfile } from '../../hooks/useProfile';
-import { getProfileUrl, getProfileShareContent } from '../../lib/profileUrl';
+import { ProfileQRModal } from '../../components/ProfileQRModal';
+import { Colors } from '../../constants/theme';
 
 export default function ProfileScreen() {
   const { session } = useAuth();
@@ -32,7 +30,7 @@ export default function ProfileScreen() {
   const [bio, setBio] = useState('');
   const [validationError, setValidationError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [copySuccess, setCopySuccess] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   // Pre-populate form once profile loads. Falls back to signup metadata for new users.
   useEffect(() => {
@@ -89,37 +87,13 @@ export default function ProfileScreen() {
     }
   };
 
-  const profileUrl = session ? getProfileUrl(session.user.id) : '';
-
-  const handleShare = async () => {
-    if (!session) return;
-    const content = getProfileShareContent(session.user.id);
-    if (!content) return;
-    try {
-      await Share.share({
-        message: content.message,
-        url: content.url,
-        title: 'Share My Shiftly Profile',
-      });
-    } catch {
-      // share sheet dismissed or unavailable
-    }
-  };
-
-  const handleCopyLink = async () => {
-    if (!profileUrl) return;
-    await Clipboard.setStringAsync(profileUrl);
-    setCopySuccess(true);
-    setTimeout(() => setCopySuccess(false), 2000);
-  };
-
   const displayError = validationError || saveError || '';
 
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
-          <ActivityIndicator color="#F9FAFB" />
+          <ActivityIndicator color={Colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -127,6 +101,13 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {session && (
+        <ProfileQRModal
+          proId={session.user.id}
+          visible={showQRModal}
+          onClose={() => setShowQRModal(false)}
+        />
+      )}
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -164,7 +145,7 @@ export default function ProfileScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Maria Garcia"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="words"
                 autoCorrect={false}
                 value={fullName}
@@ -179,7 +160,7 @@ export default function ProfileScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="e.g. Bartender, Server, Chef"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="words"
                 value={trade}
                 onChangeText={setTrade}
@@ -193,7 +174,7 @@ export default function ProfileScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="e.g. The Gold Bar"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="words"
                 value={workplaceName}
                 onChangeText={setWorkplaceName}
@@ -208,7 +189,7 @@ export default function ProfileScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="e.g. Downtown Chicago"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="words"
                 value={workplaceLocation}
                 onChangeText={setWorkplaceLocation}
@@ -222,7 +203,7 @@ export default function ProfileScreen() {
               <TextInput
                 style={[styles.input, styles.bioInput]}
                 placeholder="Tell your regulars a bit about yourself..."
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
@@ -246,7 +227,7 @@ export default function ProfileScreen() {
             disabled={saving}
           >
             {saving ? (
-              <ActivityIndicator color="#111827" />
+              <ActivityIndicator color={Colors.surface} />
             ) : (
               <Text style={styles.primaryButtonText}>Save Profile</Text>
             )}
@@ -255,49 +236,13 @@ export default function ProfileScreen() {
           {isComplete && (
             <View style={styles.shareSection}>
               <Text style={styles.shareSectionLabel}>SHARE YOUR PROFILE</Text>
-
-              <View style={styles.shareButtonRow}>
-                <TouchableOpacity
-                  style={styles.shareActionButton}
-                  activeOpacity={0.85}
-                  onPress={handleShare}
-                >
-                  <Text style={styles.shareActionText}>Share</Text>
-                </TouchableOpacity>
-
-                {!!profileUrl && (
-                  <TouchableOpacity
-                    style={[
-                      styles.shareActionButton,
-                      copySuccess && styles.shareActionButtonSuccess,
-                    ]}
-                    activeOpacity={0.85}
-                    onPress={handleCopyLink}
-                  >
-                    <Text style={styles.shareActionText}>
-                      {copySuccess ? 'Copied!' : 'Copy Link'}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              {!!profileUrl && (
-                <View style={styles.qrContainer}>
-                  <QRCode
-                    value={profileUrl}
-                    size={180}
-                    backgroundColor="#1F2937"
-                    color="#F9FAFB"
-                  />
-                  <Text style={styles.qrHint}>Guests can scan to open your profile</Text>
-                </View>
-              )}
-
-              {!profileUrl && (
-                <Text style={styles.urlPendingText}>
-                  Deploy to EAS Hosting to enable link sharing and QR codes.
-                </Text>
-              )}
+              <TouchableOpacity
+                style={styles.shareActionButton}
+                activeOpacity={0.85}
+                onPress={() => setShowQRModal(true)}
+              >
+                <Text style={styles.shareActionText}>Share Profile</Text>
+              </TouchableOpacity>
             </View>
           )}
         </ScrollView>
@@ -310,7 +255,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   centered: {
     flex: 1,
@@ -328,7 +273,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   backText: {
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     fontSize: 16,
   },
   header: {
@@ -337,13 +282,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
   },
   avatarContainer: {
     alignItems: 'center',
@@ -354,20 +299,20 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.primarySubtle,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.cardSuccessBorder,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarInitials: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.primary,
   },
   avatarHint: {
     fontSize: 12,
-    color: '#4B5563',
+    color: Colors.textSubtle,
   },
   form: {
     gap: 20,
@@ -379,44 +324,44 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#D1D5DB',
+    color: Colors.textSecondary,
   },
   required: {
-    color: '#F87171',
+    color: Colors.error,
   },
   optional: {
-    color: '#6B7280',
+    color: Colors.textMuted,
     fontWeight: '400',
   },
   input: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.borderMedium,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
     fontSize: 16,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   bioInput: {
     minHeight: 120,
     paddingTop: 16,
   },
   errorText: {
-    color: '#F87171',
+    color: Colors.error,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
   },
   successText: {
-    color: '#34D399',
+    color: Colors.primary,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
     fontWeight: '500',
   },
   primaryButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
@@ -428,61 +373,32 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
   shareSection: {
     marginTop: 12,
     gap: 16,
     borderTopWidth: 1,
-    borderTopColor: '#1F2937',
+    borderTopColor: Colors.border,
     paddingTop: 24,
   },
   shareSectionLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#6B7280',
+    color: Colors.textMuted,
     letterSpacing: 1.5,
   },
-  shareButtonRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
   shareActionButton: {
-    flex: 1,
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#374151',
-    backgroundColor: '#1F2937',
-  },
-  shareActionButtonSuccess: {
-    borderColor: '#065F46',
-    backgroundColor: '#071C15',
+    borderColor: Colors.border,
+    backgroundColor: Colors.surface,
   },
   shareActionText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#F9FAFB',
-  },
-  qrContainer: {
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: '#1F2937',
-    borderWidth: 1,
-    borderColor: '#374151',
-    borderRadius: 16,
-    padding: 24,
-  },
-  qrHint: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  urlPendingText: {
-    fontSize: 13,
-    color: '#4B5563',
-    textAlign: 'center',
-    lineHeight: 20,
+    color: Colors.primary,
   },
 });

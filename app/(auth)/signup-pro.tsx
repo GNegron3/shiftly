@@ -13,6 +13,7 @@ import {
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { Colors } from '../../constants/theme';
 
 export default function SignUpProScreen() {
   const [fullName, setFullName] = useState('');
@@ -121,7 +122,7 @@ export default function SignUpProScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Maria Garcia"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="words"
                 autoCorrect={false}
                 value={fullName}
@@ -134,7 +135,7 @@ export default function SignUpProScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="you@example.com"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -148,7 +149,7 @@ export default function SignUpProScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="e.g. Bartender, Server, Chef"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="words"
                 value={trade}
                 onChangeText={setTrade}
@@ -160,7 +161,7 @@ export default function SignUpProScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Create a password"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
@@ -172,7 +173,7 @@ export default function SignUpProScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Repeat your password"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 secureTextEntry
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
@@ -189,7 +190,7 @@ export default function SignUpProScreen() {
             disabled={loading}
           >
             {loading
-              ? <ActivityIndicator color="#111827" />
+              ? <ActivityIndicator color={Colors.surface} />
               : <Text style={styles.primaryButtonText}>Create Account</Text>
             }
           </TouchableOpacity>
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   container: {
     flexGrow: 1,
@@ -232,12 +233,12 @@ const styles = StyleSheet.create({
   },
   confirmSubtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
   },
   emailHighlight: {
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
   backButton: {
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   backText: {
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     fontSize: 16,
   },
   header: {
@@ -254,13 +255,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
   },
   form: {
     gap: 20,
@@ -272,26 +273,26 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#D1D5DB',
+    color: Colors.textSecondary,
   },
   input: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.borderMedium,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
     fontSize: 16,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   errorText: {
-    color: '#F87171',
+    color: Colors.error,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
   },
   primaryButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
   footer: {
     flexDirection: 'row',
@@ -313,11 +314,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   footerText: {
-    color: '#6B7280',
+    color: Colors.textMuted,
     fontSize: 14,
   },
   footerLink: {
-    color: '#60A5FA',
+    color: Colors.primary,
     fontSize: 14,
     fontWeight: '500',
   },

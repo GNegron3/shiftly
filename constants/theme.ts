@@ -1,41 +1,44 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
+  // Brand
+  primary: '#2D6A4F',       // Forest Green — buttons, active states
+  primaryPressed: '#245840', // Darker green for pressed
+  primarySubtle: '#E8F2EC',  // Very light green tint — avatars, success bg
+
+  // Backgrounds
+  background: '#FAF7F0',    // Warm Cream — primary screen background
+  surface: '#FFFFFF',        // Cards, inputs, modals
+
+  // Text
+  textPrimary: '#1C1917',   // Deep Charcoal
+  textSecondary: '#57534E',  // Medium warm gray
+  textMuted: '#78716C',     // Labels, secondary actions
+  textSubtle: '#A8A29E',    // Placeholders, very subtle text
+
+  // Borders
+  border: '#E7E5E0',        // Default light warm-gray border
+  borderMedium: '#D6D3CF',  // Input borders (slightly more visible)
+
+  // Accent — muted gold: success confirmations and subtle highlights ONLY
+  gold: '#B8975A',
+  goldSubtle: '#FBF5EC',
+
+  // Semantic states
+  error: '#DC2626',
+
+  // Card state tints
+  cardSuccess: '#E8F2EC',
+  cardSuccessBorder: '#86BFA3',
+  cardWarning: '#FFFBEB',
+  cardWarningBorder: '#D97706',
+} as const;
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {

@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 import { useAuth } from '../../context/auth';
 import { useFollowers } from '../../hooks/useFollowers';
 import { Follower } from '../../types/Follower';
+import { Colors } from '../../constants/theme';
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -39,7 +40,7 @@ export default function FollowersScreen() {
     if (loading) {
       return (
         <View style={styles.centered}>
-          <ActivityIndicator color="#F9FAFB" />
+          <ActivityIndicator color={Colors.primary} />
         </View>
       );
     }
@@ -97,7 +98,7 @@ export default function FollowersScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
@@ -112,12 +113,12 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: Colors.textMuted,
   },
   headerTitle: {
     fontSize: 17,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   headerSpacer: {
     width: 48,
@@ -130,13 +131,13 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 14,
-    color: '#EF4444',
+    color: Colors.error,
     textAlign: 'center',
   },
   retryButton: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -144,16 +145,16 @@ const styles = StyleSheet.create({
   retryText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.primary,
   },
   emptyHeading: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   emptyBody: {
     fontSize: 14,
-    color: '#6B7280',
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     paddingHorizontal: 24,
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.border,
   },
   row: {
     flexDirection: 'row',
@@ -175,16 +176,16 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.primarySubtle,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.cardSuccessBorder,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#9CA3AF',
+    color: Colors.primary,
   },
   rowBody: {
     flex: 1,
@@ -193,10 +194,10 @@ const styles = StyleSheet.create({
   rowName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   rowDate: {
     fontSize: 13,
-    color: '#6B7280',
+    color: Colors.textSecondary,
   },
 });

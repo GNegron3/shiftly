@@ -1,6 +1,7 @@
 import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { Colors } from '../../constants/theme';
 
 export default function WelcomeScreen() {
   const [devProfileId, setDevProfileId] = useState('');
@@ -61,7 +62,7 @@ export default function WelcomeScreen() {
               <TextInput
                 style={styles.devInput}
                 placeholder="Paste professional UUID"
-                placeholderTextColor="#4B5563"
+                placeholderTextColor={Colors.textSubtle}
                 autoCapitalize="none"
                 autoCorrect={false}
                 value={devProfileId}
@@ -86,7 +87,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
@@ -99,20 +100,20 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     marginBottom: 8,
   },
   heading: {
     fontSize: 40,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -1,
   },
   subtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
   },
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   primaryButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
   secondaryButton: {
     backgroundColor: 'transparent',
@@ -140,12 +141,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
   },
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   tertiaryButton: {
     paddingVertical: 14,
@@ -155,19 +156,19 @@ const styles = StyleSheet.create({
   tertiaryButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6B7280',
+    color: Colors.textMuted,
   },
   devPanel: {
     width: '100%',
     borderTopWidth: 1,
-    borderTopColor: '#1F2937',
+    borderTopColor: Colors.border,
     paddingTop: 16,
     gap: 8,
   },
   devLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#374151',
+    color: Colors.textSubtle,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
@@ -177,17 +178,17 @@ const styles = StyleSheet.create({
   },
   devInput: {
     flex: 1,
-    backgroundColor: '#0D1117',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#1F2937',
+    borderColor: Colors.border,
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
     fontSize: 12,
-    color: '#6B7280',
+    color: Colors.textMuted,
   },
   devButton: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.border,
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -196,6 +197,6 @@ const styles = StyleSheet.create({
   devButtonText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#4B5563',
+    color: Colors.textMuted,
   },
 });

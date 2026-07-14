@@ -10,6 +10,7 @@ import {
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/auth';
+import { Colors } from '../../constants/theme';
 import { getFollowing } from '../../services/followService';
 import { getSchedule } from '../../services/scheduleService';
 import { ProfessionalProfile } from '../../types/Profile';
@@ -81,7 +82,7 @@ export default function GuestFeed() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
-          <ActivityIndicator color="#F9FAFB" />
+          <ActivityIndicator color={Colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -99,7 +100,7 @@ export default function GuestFeed() {
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             {signOutLoading
-              ? <ActivityIndicator color="#9CA3AF" />
+              ? <ActivityIndicator color={Colors.textMuted} />
               : <Text style={styles.signOutText}>Log Out</Text>
             }
           </TouchableOpacity>
@@ -163,7 +164,7 @@ export default function GuestFeed() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   centered: {
     flex: 1,
@@ -185,17 +186,17 @@ const styles = StyleSheet.create({
   screenTitle: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
   },
   signOutText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: Colors.textMuted,
   },
   todayLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#6B7280',
+    color: Colors.textMuted,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
     marginBottom: 20,
@@ -210,12 +211,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     textAlign: 'center',
   },
   emptyBody: {
     fontSize: 15,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
     maxWidth: 280,
@@ -224,14 +225,19 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   proCard: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.border,
     borderRadius: 14,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    shadowColor: Colors.textPrimary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   proCardLeft: {
     flexDirection: 'row',
@@ -243,16 +249,16 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.primarySubtle,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.cardSuccessBorder,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarInitials: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.primary,
   },
   proInfo: {
     flex: 1,
@@ -261,11 +267,11 @@ const styles = StyleSheet.create({
   proName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   proMeta: {
     fontSize: 13,
-    color: '#6B7280',
+    color: Colors.textSecondary,
   },
   shiftBadge: {
     marginLeft: 12,
@@ -273,10 +279,10 @@ const styles = StyleSheet.create({
   shiftText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#D1D5DB',
+    color: Colors.textPrimary,
   },
   shiftTextOff: {
     fontSize: 13,
-    color: '#4B5563',
+    color: Colors.textSubtle,
   },
 });

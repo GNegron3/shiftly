@@ -18,6 +18,7 @@ import {
   getPendingReturnTo,
   clearPendingReturnTo,
 } from '../../lib/pendingReturnTo';
+import { Colors } from '../../constants/theme';
 
 export default function LoginScreen() {
   const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
@@ -107,7 +108,7 @@ export default function LoginScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="you@example.com"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -121,7 +122,7 @@ export default function LoginScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Your password"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.textSubtle}
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
@@ -145,7 +146,7 @@ export default function LoginScreen() {
             disabled={loading}
           >
             {loading
-              ? <ActivityIndicator color="#111827" />
+              ? <ActivityIndicator color={Colors.surface} />
               : <Text style={styles.primaryButtonText}>Log In</Text>
             }
           </TouchableOpacity>
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   safeArea: {
     flex: 1,
-    backgroundColor: '#111827',
+    backgroundColor: Colors.background,
   },
   container: {
     flexGrow: 1,
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   backText: {
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     fontSize: 16,
   },
   header: {
@@ -189,13 +190,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
     letterSpacing: -0.5,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: Colors.textSecondary,
   },
   form: {
     gap: 20,
@@ -207,33 +208,33 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#D1D5DB',
+    color: Colors.textSecondary,
   },
   input: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#374151',
+    borderColor: Colors.borderMedium,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
     fontSize: 16,
-    color: '#F9FAFB',
+    color: Colors.textPrimary,
   },
   forgotContainer: {
     alignSelf: 'flex-end',
   },
   forgotText: {
-    color: '#60A5FA',
+    color: Colors.primary,
     fontSize: 14,
   },
   errorText: {
-    color: '#F87171',
+    color: Colors.error,
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'center',
   },
   primaryButton: {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: Colors.surface,
   },
   footer: {
     flexDirection: 'row',
@@ -255,11 +256,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   footerText: {
-    color: '#6B7280',
+    color: Colors.textMuted,
     fontSize: 14,
   },
   footerLink: {
-    color: '#60A5FA',
+    color: Colors.primary,
     fontSize: 14,
     fontWeight: '500',
   },
