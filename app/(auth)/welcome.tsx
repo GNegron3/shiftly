@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Colors } from '../../constants/theme';
@@ -16,8 +16,12 @@ export default function WelcomeScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
 
-        {/* Logo Placeholder */}
-        <View style={styles.logoPlaceholder} />
+        {/* App Icon */}
+        <Image
+          source={require('../../assets/images/icon.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
         {/* App Name */}
         <Text style={styles.heading}>Enpour</Text>
@@ -96,13 +100,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     gap: 20,
   },
-  logoPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
+  logo: {
+    width: 96,
+    height: 96,
     marginBottom: 8,
   },
   heading: {

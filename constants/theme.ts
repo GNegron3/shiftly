@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
 
 export const Colors = {
-  // Brand
-  primary: '#2D6A4F',       // Forest Green — buttons, active states
-  primaryPressed: '#245840', // Darker green for pressed
-  primarySubtle: '#E8F2EC',  // Very light green tint — avatars, success bg
+  // Brand — #08312B extracted from Enpour logo (dominant background pixel)
+  primary: '#08312B',
+  primaryPressed: '#062520',
+  primarySubtle: '#E3EDEB',  // Very light tint of brand green — avatars, success bg
 
   // Backgrounds
   background: '#FAF7F0',    // Warm Cream — primary screen background
@@ -28,8 +28,8 @@ export const Colors = {
   error: '#DC2626',
 
   // Card state tints
-  cardSuccess: '#E8F2EC',
-  cardSuccessBorder: '#86BFA3',
+  cardSuccess: '#E3EDEB',
+  cardSuccessBorder: '#6B9E95',
   cardWarning: '#FFFBEB',
   cardWarningBorder: '#D97706',
 } as const;
