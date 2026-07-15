@@ -14,6 +14,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { isValidReturnTo, setPendingReturnTo } from '../../lib/pendingReturnTo';
+import { getAuthConfirmUrl } from '../../lib/profileUrl';
 import { Colors } from '../../constants/theme';
 
 export default function SignUpGuestScreen() {
@@ -45,10 +46,12 @@ export default function SignUpGuestScreen() {
 
     setLoading(true);
 
+    const confirmUrl = getAuthConfirmUrl();
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
+        emailRedirectTo: confirmUrl || undefined,
         data: { full_name: fullName.trim(), role: 'guest' },
       },
     });

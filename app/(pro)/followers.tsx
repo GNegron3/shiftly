@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 import { useAuth } from '../../context/auth';
 import { useFollowers } from '../../hooks/useFollowers';
 import { Follower } from '../../types/Follower';
@@ -35,6 +36,8 @@ function FollowerRow({ item }: { item: Follower }) {
 export default function FollowersScreen() {
   const { session } = useAuth();
   const { followers, loading, error, refresh } = useFollowers(session?.user.id ?? null);
+
+  useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
 
   const renderContent = () => {
     if (loading) {

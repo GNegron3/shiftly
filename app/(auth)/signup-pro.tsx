@@ -13,6 +13,7 @@ import {
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getAuthConfirmUrl } from '../../lib/profileUrl';
 import { Colors } from '../../constants/theme';
 
 export default function SignUpProScreen() {
@@ -42,10 +43,12 @@ export default function SignUpProScreen() {
     }
 
     setLoading(true);
+    const confirmUrl = getAuthConfirmUrl();
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
+        emailRedirectTo: confirmUrl || undefined,
         data: { full_name: fullName.trim(), trade: trade.trim(), role: 'pro' },
       },
     });

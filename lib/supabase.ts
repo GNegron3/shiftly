@@ -10,13 +10,14 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 // triggering Node 20's ExperimentalWarning. A truthy transport class
 // prevents that fallback; the class is never instantiated during export.
 const isStaticRender = Platform.OS === 'web' && typeof window === 'undefined';
+const isBrowser = Platform.OS === 'web' && typeof window !== 'undefined';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage: kvStorage,
     autoRefreshToken: !isStaticRender,
     persistSession: !isStaticRender,
-    detectSessionInUrl: false,
+    detectSessionInUrl: isBrowser,
   },
   ...(isStaticRender && {
     realtime: {

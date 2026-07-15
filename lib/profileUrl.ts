@@ -5,6 +5,10 @@ export function getProfileUrl(proId: string): string {
   return `${BASE_URL}/pro/${proId}`;
 }
 
+export function getAuthConfirmUrl(): string {
+  return BASE_URL ? `${BASE_URL}/auth/confirm` : '';
+}
+
 export function getProfileShareContent(
   proId: string,
 ): { message: string; url: string } | null {
