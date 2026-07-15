@@ -223,7 +223,7 @@ export default function PublicProfileScreen() {
 
         {renderFollowButton()}
 
-        <Text style={styles.footerText}>Powered by Shiftly</Text>
+        <Text style={styles.footerText}>Powered by Enpour</Text>
 
       </ScrollView>
     </SafeAreaView>

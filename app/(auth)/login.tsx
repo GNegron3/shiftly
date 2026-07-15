@@ -99,7 +99,7 @@ export default function LoginScreen() {
 
           <View style={styles.header}>
             <Text style={styles.heading}>Welcome back</Text>
-            <Text style={styles.subtitle}>Log in to your Shiftly account</Text>
+            <Text style={styles.subtitle}>Log in to your Enpour account</Text>
           </View>
 
           <View style={styles.form}>

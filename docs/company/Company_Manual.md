@@ -1,27 +1,27 @@
-# Shiftly Company Manual
+# Enpour Company Manual
 **Version 1.0 — Official Master Manual**
 
 ---
 
 ## Chapter 1 — Vision & Philosophy
 
-### Welcome to Shiftly
+### Welcome to Enpour
 
-This manual is the foundation of Shiftly as a company. It is not simply product documentation or engineering notes. It explains why Shiftly exists, what it believes, and how decisions should be made as the company grows.
+This manual is the foundation of Enpour as a company. It is not simply product documentation or engineering notes. It explains why Enpour exists, what it believes, and how decisions should be made as the company grows.
 
 Technology changes quickly. Principles should not.
 
-Every engineer, designer, advisor, contractor, or future employee should be able to read this chapter and understand not only what Shiftly is building, but why it deserves to exist.
+Every engineer, designer, advisor, contractor, or future employee should be able to read this chapter and understand not only what Enpour is building, but why it deserves to exist.
 
 This manual is considered the primary source of truth. When implementation and the manual disagree, the manual should be intentionally reviewed before future development continues.
 
 ### How to Use This Manual
 
-This manual is a living document. As the company grows, it will evolve through intentional revisions rather than scattered notes. Documentation is part of development — not something completed after development. Every significant architectural or product decision should ultimately be reflected here so that Shiftly remains internally consistent as it grows.
+This manual is a living document. As the company grows, it will evolve through intentional revisions rather than scattered notes. Documentation is part of development — not something completed after development. Every significant architectural or product decision should ultimately be reflected here so that Enpour remains internally consistent as it grows.
 
 ---
 
-### The Shiftly Manifesto
+### The Enpour Manifesto
 
 Hospitality has never been just about food or drinks. It has always been about people.
 
@@ -29,7 +29,7 @@ Every shift creates conversations. Every table creates memories. Every bar seat 
 
 Schedules change. Professionals move between venues. Life changes. Relationships that took years to build often disappear because there has never been a simple, professional, privacy-first way to stay connected.
 
-Shiftly exists because those relationships deserve better tools.
+Enpour exists because those relationships deserve better tools.
 
 We believe hospitality professionals should have the opportunity to maintain the relationships they earn through exceptional service. We believe guests deserve a respectful and uncomplicated way to reconnect with the professionals who make their experiences memorable. We believe restaurants, bars, hotels, and hospitality venues are partners in creating those relationships.
 
@@ -39,21 +39,21 @@ Technology should never replace hospitality. Technology should strengthen it.
 
 ### Founder Letter
 
-Shiftly did not begin with investors or a startup accelerator. It began inside restaurants.
+Enpour did not begin with investors or a startup accelerator. It began inside restaurants.
 
 Years spent working in hospitality revealed the same problem repeatedly: guests would ask when I was working, where I had gone, or whether I had moved to another restaurant. Valuable relationships disappeared simply because there was no professional way to stay connected.
 
-I experimented with a simple email list. It proved that guests genuinely wanted an easier way to know when they could catch me at work. That simple idea became the foundation for Shiftly.
+I experimented with a simple email list. It proved that guests genuinely wanted an easier way to know when they could catch me at work. That simple idea became the foundation for Enpour.
 
 This company is not being built to maximize screen time or create another social platform. It is being built to strengthen the relationships created through genuine hospitality.
 
-My hope is that everyone who contributes to Shiftly remembers that our purpose is not to build software for its own sake. Our purpose is to help people stay connected through hospitality.
+My hope is that everyone who contributes to Enpour remembers that our purpose is not to build software for its own sake. Our purpose is to help people stay connected through hospitality.
 
 ---
 
 ### Our Story
 
-Shiftly began with observation before it became software. Hospitality professionals invest years building trust with guests, yet the industry provides very few tools designed specifically to preserve those relationships. Instead of forcing professionals to rely on personal phone numbers or social media, Shiftly creates permission-based connections that respect privacy while making it easy for guests to reconnect.
+Enpour began with observation before it became software. Hospitality professionals invest years building trust with guests, yet the industry provides very few tools designed specifically to preserve those relationships. Instead of forcing professionals to rely on personal phone numbers or social media, Enpour creates permission-based connections that respect privacy while making it easy for guests to reconnect.
 
 Trust — not attention — is the company's competitive advantage. Every future feature should reinforce that belief.
 
@@ -71,7 +71,7 @@ Technology should quietly remove friction from human relationships rather than b
 
 ### Our Mission
 
-Shiftly's mission is to help hospitality professionals build, maintain, and grow meaningful relationships with their guests through safe, simple, and trusted technology.
+Enpour's mission is to help hospitality professionals build, maintain, and grow meaningful relationships with their guests through safe, simple, and trusted technology.
 
 Every feature should strengthen relationships, improve trust, reduce friction, and respect user privacy. If a feature cannot clearly support that mission, it should be reconsidered before development begins.
 
@@ -81,7 +81,7 @@ Every feature should strengthen relationships, improve trust, reduce friction, a
 
 Technology alone does not create meaningful experiences. People do.
 
-Shiftly exists to support the relationships that hospitality professionals earn through consistency, trust, and exceptional service. Every product decision should reinforce authentic human connection rather than distract from it.
+Enpour exists to support the relationships that hospitality professionals earn through consistency, trust, and exceptional service. Every product decision should reinforce authentic human connection rather than distract from it.
 
 We believe privacy builds confidence, simplicity builds adoption, and trust builds lasting companies.
 
@@ -90,7 +90,7 @@ We believe privacy builds confidence, simplicity builds adoption, and trust buil
 ### Core Values
 
 **Trust Above Everything**
-Trust is Shiftly's most valuable asset. Every decision should increase the confidence users place in the platform.
+Trust is Enpour's most valuable asset. Every decision should increase the confidence users place in the platform.
 
 **Privacy Is a Responsibility**
 Privacy is not a premium feature. It is an obligation. The safest experience should also be the default experience.
@@ -102,19 +102,19 @@ Technology is our tool. Hospitality is our purpose. Every interaction should ref
 A simple product used every week is more valuable than a complicated product used once.
 
 **Relationships Over Algorithms**
-Shiftly exists to strengthen genuine relationships — not maximize engagement metrics.
+Enpour exists to strengthen genuine relationships — not maximize engagement metrics.
 
 **Long-Term Thinking**
 Short-term growth should never compromise long-term trust, maintainability, or product quality.
 
 ---
 
-### What Shiftly Refuses to Become
+### What Enpour Refuses to Become
 
-- Shiftly is not another social media platform.
-- Shiftly is not built around viral growth or endless scrolling.
-- Shiftly is not designed to replace restaurants, bars, hotels, or hospitality venues. Those businesses are partners that create the environments where relationships begin.
-- Shiftly will never intentionally build features that require sacrificing user trust simply to increase growth.
+- Enpour is not another social media platform.
+- Enpour is not built around viral growth or endless scrolling.
+- Enpour is not designed to replace restaurants, bars, hotels, or hospitality venues. Those businesses are partners that create the environments where relationships begin.
+- Enpour will never intentionally build features that require sacrificing user trust simply to increase growth.
 - We refuse to lose focus by trying to solve every problem in hospitality.
 
 Our responsibility is to solve one problem exceptionally well: helping hospitality professionals stay connected with the guests who choose to follow them.
@@ -127,7 +127,7 @@ Every startup faces pressure to move quickly. Speed matters, but direction matte
 
 Engineering decisions should favor maintainability. Product decisions should favor clarity. Business decisions should favor trust.
 
-Whenever possible, Shiftly should choose the decision that will still feel correct ten years from now.
+Whenever possible, Enpour should choose the decision that will still feel correct ten years from now.
 
 ---
 
@@ -137,13 +137,13 @@ Downloads alone are not success.
 
 Success is measured by stronger relationships, repeat guest visits, active professionals, long-term trust, and a platform that quietly improves hospitality experiences.
 
-If Shiftly grows while losing the trust of its users, it has failed. If Shiftly remains trusted while steadily improving relationships throughout hospitality, it has succeeded.
+If Enpour grows while losing the trust of its users, it has failed. If Enpour remains trusted while steadily improving relationships throughout hospitality, it has succeeded.
 
 ---
 
 ### The Future We Are Building
 
-The first version of Shiftly will intentionally remain focused. Professionals will create profiles, publish schedules, share profile links, and build a following.
+The first version of Enpour will intentionally remain focused. Professionals will create profiles, publish schedules, share profile links, and build a following.
 
 Future versions may include discoverability, reviews, analytics, private event opportunities, and additional professional tools. Every future feature must strengthen the original mission rather than distract from it.
 
@@ -153,9 +153,9 @@ Growth should feel intentional, not accidental.
 
 ### Founder Commitments
 
-The founder establishes the initial direction of Shiftly, but those principles should outlive any individual person.
+The founder establishes the initial direction of Enpour, but those principles should outlive any individual person.
 
-Shiftly commits to:
+Enpour commits to:
 - Protecting user trust before pursuing rapid growth
 - Respecting user privacy by default
 - Listening carefully to hospitality professionals and guests
@@ -178,7 +178,7 @@ Every future leader should feel responsible for protecting these commitments.
 
 **Respect Attention** — Notifications and communication should provide value rather than compete for attention.
 
-**Build for People** — Metrics help measure success, but people remain the reason Shiftly exists.
+**Build for People** — Metrics help measure success, but people remain the reason Enpour exists.
 
 ---
 
@@ -198,7 +198,7 @@ If these questions cannot be answered confidently, the proposal should be recons
 
 ---
 
-### The Shiftly Decision Pyramid
+### The Enpour Decision Pyramid
 
 Every decision should follow this hierarchy:
 
@@ -230,13 +230,13 @@ Lower levels should never contradict higher levels. Engineering decisions should
 
 ### Purpose
 
-The PRD defines what Shiftly is building, who it serves, and the scope of the product. It is the blueprint used before design or development begins.
+The PRD defines what Enpour is building, who it serves, and the scope of the product. It is the blueprint used before design or development begins.
 
 ---
 
 ### Product Overview
 
-Shiftly is a mobile-first platform that helps hospitality professionals maintain relationships with guests through secure, permission-based connections. Professionals share a profile link, guests choose to follow, and Shiftly keeps both sides connected through schedule updates.
+Enpour is a mobile-first platform that helps hospitality professionals maintain relationships with guests through secure, permission-based connections. Professionals share a profile link, guests choose to follow, and Enpour keeps both sides connected through schedule updates.
 
 ---
 
@@ -244,7 +244,7 @@ Shiftly is a mobile-first platform that helps hospitality professionals maintain
 
 Hospitality professionals build valuable relationships with guests, but changing schedules, venue changes, and career moves often cause those relationships to disappear. Existing solutions rely on personal phone numbers, social media, or word of mouth — each introducing privacy concerns or unnecessary friction.
 
-Shiftly provides a professional, privacy-first solution.
+Enpour provides a professional, privacy-first solution.
 
 ---
 
@@ -346,7 +346,7 @@ Planned after MVP:
 
 ### Non-Goals
 
-Shiftly is not:
+Enpour is not:
 - A social media platform
 - Restaurant scheduling software
 - A general messaging app
@@ -359,13 +359,13 @@ Shiftly is not:
 
 ### Purpose
 
-The System Architecture chapter defines how Shiftly is organized at a high level. It establishes the core systems, how they interact, and the architectural principles that guide future development.
+The System Architecture chapter defines how Enpour is organized at a high level. It establishes the core systems, how they interact, and the architectural principles that guide future development.
 
 ---
 
 ### Architecture Philosophy
 
-Shiftly should remain modular, scalable, and easy to understand. Every new feature should extend an existing system when appropriate instead of creating isolated functionality.
+Enpour should remain modular, scalable, and easy to understand. Every new feature should extend an existing system when appropriate instead of creating isolated functionality.
 
 ---
 
@@ -383,7 +383,7 @@ Shiftly should remain modular, scalable, and easy to understand. Every new featu
 
 ### System Relationship
 
-At the center of Shiftly is a single relationship:
+At the center of Enpour is a single relationship:
 
 ```
 Professional ↔ Guest
@@ -453,7 +453,7 @@ Planned architectural additions include venue management, discoverability, revie
 
 ### Purpose
 
-The Product Principles define how Shiftly makes product decisions. When multiple solutions are possible, these principles guide the final decision.
+The Product Principles define how Enpour makes product decisions. When multiple solutions are possible, these principles guide the final decision.
 
 ---
 
@@ -461,9 +461,9 @@ The Product Principles define how Shiftly makes product decisions. When multiple
 
 **Privacy by Default** — Professionals control their visibility. The safest experience should always be the default.
 
-**Professionals Own Their Audience** — Professionals earn their following through exceptional service. Shiftly provides the tools to maintain those relationships.
+**Professionals Own Their Audience** — Professionals earn their following through exceptional service. Enpour provides the tools to maintain those relationships.
 
-**Restaurants Are Partners** — Shiftly complements hospitality venues and helps strengthen guest loyalty rather than competing with businesses.
+**Restaurants Are Partners** — Enpour complements hospitality venues and helps strengthen guest loyalty rather than competing with businesses.
 
 **Simple Beats Complex** — Choose the simplest solution that fully solves the problem.
 
@@ -510,13 +510,13 @@ Before approving a feature, ask:
 
 ### Purpose
 
-This chapter defines the data architecture of Shiftly. It identifies the core data entities, their purpose, and how they relate to one another.
+This chapter defines the data architecture of Enpour. It identifies the core data entities, their purpose, and how they relate to one another.
 
 ---
 
 ### Data Architecture Philosophy
 
-Shiftly stores only the information necessary to deliver value. Every piece of data should have a clear purpose. The data model should remain simple, scalable, and easy to maintain.
+Enpour stores only the information necessary to deliver value. Every piece of data should have a clear purpose. The data model should remain simple, scalable, and easy to maintain.
 
 - One source of truth per data type
 - Minimize duplicated data
@@ -527,7 +527,7 @@ Shiftly stores only the information necessary to deliver value. Every piece of d
 
 ### Core Data Entities
 
-**Users** — Represents every authenticated account within Shiftly. Responsibilities: authentication, account ownership, identity.
+**Users** — Represents every authenticated account within Enpour. Responsibilities: authentication, account ownership, identity.
 
 **Professional Profiles** — Stores the public profile of hospitality professionals. Responsibilities: display name, profile photo, bio, current venue, social links (future), visibility settings. Each professional has one profile.
 
@@ -535,7 +535,7 @@ Shiftly stores only the information necessary to deliver value. Every piece of d
 
 **Schedules** — Stores weekly availability for hospitality professionals. Responsibilities: day of week, shift type, venue, start time, end time, status (Working / Off). Schedules are designed to be updated frequently.
 
-**Follows** — Represents the relationship between a guest and a professional. Responsibilities: permission-based following, notification eligibility, follow date, follow status. This table is the foundation of Shiftly's relationship model.
+**Follows** — Represents the relationship between a guest and a professional. Responsibilities: permission-based following, notification eligibility, follow date, follow status. This table is the foundation of Enpour's relationship model.
 
 **Notifications** — Stores notifications generated by the platform. Examples: schedule updated, professional joined, future event reminders.
 
@@ -565,7 +565,7 @@ Professional
 
 **Users own:** their account, their profile, their schedule, their visibility settings, their notification preferences.
 
-**Shiftly owns:** platform configuration, system notifications, moderation data, analytics data, operational logs.
+**Enpour owns:** platform configuration, system notifications, moderation data, analytics data, operational logs.
 
 ---
 
@@ -600,4 +600,4 @@ Reviews, Ratings, Private Event Requests, Payments, Venues, Saved Favorites, Gue
 
 | Version | Description |
 |---|---|
-| 1.0 | Foundation draft. Establishes the philosophical, product, architectural, and data foundation for Shiftly. |
+| 1.0 | Foundation draft. Establishes the philosophical, product, architectural, and data foundation for Enpour. |

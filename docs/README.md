@@ -1,6 +1,6 @@
-# Shiftly Documentation
+# Enpour Documentation
 
-This directory is the canonical source of truth for all Shiftly project documentation.
+This directory is the canonical source of truth for all Enpour project documentation.
 
 ## Structure
 
@@ -15,7 +15,7 @@ docs/
 
 ## Source of Truth
 
-The Markdown files in this directory are the official, editable versions of all Shiftly manuals.
+The Markdown files in this directory are the official, editable versions of all Enpour manuals.
 Word or PDF exports may be created for distribution, but this repository is authoritative.
 
 All changes to documentation must be committed and pushed to GitHub before they are considered approved.

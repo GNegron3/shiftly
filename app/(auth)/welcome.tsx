@@ -20,11 +20,11 @@ export default function WelcomeScreen() {
         <View style={styles.logoPlaceholder} />
 
         {/* App Name */}
-        <Text style={styles.heading}>Shiftly</Text>
+        <Text style={styles.heading}>Enpour</Text>
 
         {/* Tagline */}
         <Text style={styles.subtitle}>
-          Stay connected with your regulars.{'\n'}Share your schedule, build your following.
+          Come back for another round.{'\n'}Never miss your favorite hospitality professional.
         </Text>
 
         {/* Buttons */}

@@ -1,4 +1,4 @@
-# Shiftly Engineering Manual
+# Enpour Engineering Manual
 **Version 1.0 — Official Master Manual**
 
 ---
@@ -7,7 +7,7 @@
 
 ### Purpose
 
-This manual defines the engineering standards used to build and maintain Shiftly. Its purpose is to ensure every contributor follows the same architectural principles, coding standards, and development workflow. Whenever implementation decisions are unclear, this manual should be consulted before development continues.
+This manual defines the engineering standards used to build and maintain Enpour. Its purpose is to ensure every contributor follows the same architectural principles, coding standards, and development workflow. Whenever implementation decisions are unclear, this manual should be consulted before development continues.
 
 ---
 
@@ -81,13 +81,13 @@ A feature is considered complete only when:
 
 ### Purpose
 
-This chapter defines how the Shiftly codebase is organized. A consistent project structure improves readability, reduces onboarding time, and makes the application easier to maintain as it grows.
+This chapter defines how the Enpour codebase is organized. A consistent project structure improves readability, reduces onboarding time, and makes the application easier to maintain as it grows.
 
 ---
 
 ### Architecture Philosophy
 
-Shiftly follows a modular architecture. Each part of the application should have a single responsibility. Features should be organized by purpose rather than convenience.
+Enpour follows a modular architecture. Each part of the application should have a single responsibility. Features should be organized by purpose rather than convenience.
 
 ---
 
@@ -544,7 +544,7 @@ Every schema change requires a migration. Migrations must be deterministic, reve
 
 ### Purpose
 
-Supabase is Shiftly's backend platform providing: PostgreSQL database, authentication, authorization, Row Level Security, storage, realtime, edge functions, and database migrations.
+Supabase is Enpour's backend platform providing: PostgreSQL database, authentication, authorization, Row Level Security, storage, realtime, edge functions, and database migrations.
 
 ---
 
@@ -702,7 +702,7 @@ Large collections require pagination using `limit` and `cursor`. Avoid offset pa
 
 ### Versioning Philosophy
 
-Shiftly versions APIs only when breaking changes occur. Format: `/api/v1/`. Minor additions should not require new versions.
+Enpour versions APIs only when breaking changes occur. Format: `/api/v1/`. Minor additions should not require new versions.
 
 ---
 
@@ -857,7 +857,7 @@ Secrets never belong in Git. If a secret is committed: rotate the credential imm
 
 ### 14.1 Purpose
 
-AI is a development accelerator, not a decision maker. Shiftly uses AI to increase engineering velocity while maintaining consistent architecture, predictable code quality, and human ownership of every implementation.
+AI is a development accelerator, not a decision maker. Enpour uses AI to increase engineering velocity while maintaining consistent architecture, predictable code quality, and human ownership of every implementation.
 
 All generated code must meet the same engineering standards as manually written code.
 
@@ -877,7 +877,7 @@ Engineers remain responsible for: product decisions, architecture, database desi
 
 ---
 
-### 14.4 AI Roles Within Shiftly
+### 14.4 AI Roles Within Enpour
 
 **AI may assist with:** feature implementation, component creation, refactoring, boilerplate generation, unit tests, documentation, SQL generation, type generation, API implementation, debugging suggestions, error analysis.
 
@@ -954,7 +954,7 @@ Never provide AI with: production secrets, API keys, access tokens, customer per
 
 ### 14.13 Working with Claude
 
-Claude is Shiftly's primary coding assistant. Claude should:
+Claude is Enpour's primary coding assistant. Claude should:
 - Follow the Company Manual
 - Follow the Engineering Manual
 - Follow the PRD
@@ -1011,7 +1011,7 @@ Work is considered complete only when:
 - Requirements are fully implemented
 - Edge cases are handled
 - Errors are handled gracefully
-- Code follows Shiftly standards
+- Code follows Enpour standards
 - Tests pass
 - Build succeeds
 - Code is review-ready

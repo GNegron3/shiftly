@@ -37,7 +37,7 @@ export function ProfileQRModal({ proId, visible, onClose }: Props) {
       await Share.share({
         message: content.message,
         url: content.url,
-        title: 'Share My Shiftly Profile',
+        title: 'Share My Enpour Profile',
       });
     } catch {
       // share sheet dismissed or unavailable
@@ -59,7 +59,7 @@ export function ProfileQRModal({ proId, visible, onClose }: Props) {
               <View style={styles.handle} />
 
               <View style={styles.header}>
-                <Text style={styles.title}>Your Shiftly Profile</Text>
+                <Text style={styles.title}>Your Enpour Profile</Text>
                 <TouchableOpacity
                   onPress={onClose}
                   hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}

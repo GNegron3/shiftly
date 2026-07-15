@@ -1,9 +1,9 @@
 # Changelog
 
-All notable changes to Shiftly will be documented in this file.
+All notable changes to Enpour will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-Shiftly uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Enpour uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 

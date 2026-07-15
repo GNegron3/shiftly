@@ -130,7 +130,7 @@ export default function ProDashboard() {
               <Text style={styles.welcomeText}>
                 {isProfileComplete
                   ? `Welcome back, ${profile!.full_name.split(' ')[0]}.`
-                  : 'Welcome to Shiftly.'}
+                  : 'Welcome to Enpour.'}
               </Text>
               {isProfileComplete && (
                 <Text style={styles.welcomeSub}>

@@ -15,7 +15,7 @@ export function getProfileShareContent(
   const url = getProfileUrl(proId);
   if (!url) return null;
   return {
-    message: `Check out my Shiftly profile:\n\n${url}`,
+    message: `Check out my Enpour profile:\n\n${url}`,
     url,
   };
 }
