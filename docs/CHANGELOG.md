@@ -42,9 +42,12 @@ Enpour uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Known Limitations
 
-- **Share Profile base URL** — `EXPO_PUBLIC_PROFILE_BASE_URL` must be set before share, copy link, and QR features are active. The value is the EAS Hosting URL obtained after running `eas init` → `eas deploy`. Until set, the profile screen shows a pending state and the dashboard falls back to sharing a plain-text profile ID.
-- **Universal Links / App Links** — tapping a profile URL in a message will open the browser, not the app. iOS Universal Links and Android App Links require `apple-app-site-association` and `assetlinks.json` on a production domain plus a native EAS build. Deferred until a custom domain is confirmed and an App Store build is ready.
+- **Universal Links / App Links** — tapping a profile URL in a message will open the browser, not the app. Still deferred, but no longer on the domain — `enpourapp.com` is live. Blocked instead on: an iOS bundle identifier / Android package name decision, an Apple Team ID, and native Android signing credentials (for `assetlinks.json`'s SHA-256 fingerprint). See [`docs/architecture/domain-and-hosting.md`](../architecture/domain-and-hosting.md).
 - **Web profile page content** — the deployed EAS Hosting page at `/pro/<id>` renders the React app shell; profile data is fetched client-side. Link previews in iMessage, Slack, and Twitter will show a generic title, not the professional's name. Open Graph meta tags are a post-MVP concern.
+
+### Infrastructure
+
+- **Production domain connected** — `enpourapp.com` purchased and connected to Cloudflare (authoritative DNS). `EXPO_PUBLIC_PROFILE_BASE_URL` updated to `https://enpourapp.com` in `.env` and in the EAS `production` environment variable (`eas env:update`). See [`docs/architecture/domain-and-hosting.md`](../architecture/domain-and-hosting.md) for the EAS Hosting custom-domain DNS records and remaining Supabase Auth redirect step (Supabase Dashboard, not in-repo).
 
 ---
 
