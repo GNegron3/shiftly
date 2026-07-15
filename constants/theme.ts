@@ -1,13 +1,13 @@
 import { Platform } from 'react-native';
 
 export const Colors = {
-  // Brand — #08312B extracted from Enpour logo (dominant background pixel)
-  primary: '#08312B',
-  primaryPressed: '#062520',
+  // Brand — #1B5E20 Forest Green
+  primary: '#1B5E20',
+  primaryPressed: '#144718',
   primarySubtle: '#E3EDEB',  // Very light tint of brand green — avatars, success bg
 
   // Backgrounds
-  background: '#FAF7F0',    // Warm Cream — primary screen background
+  background: '#F9F4EA',    // Warm Cream — primary screen background
   surface: '#FFFFFF',        // Cards, inputs, modals
 
   // Text
