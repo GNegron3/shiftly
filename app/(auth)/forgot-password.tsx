@@ -13,6 +13,8 @@ import {
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getAuthConfirmUrl } from '../../lib/profileUrl';
+import { devLog } from '../../lib/devLog';
 import { Colors } from '../../constants/theme';
 
 export default function ForgotPasswordScreen() {
@@ -30,7 +32,11 @@ export default function ForgotPasswordScreen() {
     }
 
     setLoading(true);
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim());
+    const confirmUrl = getAuthConfirmUrl();
+    devLog('forgot-password', { redirectTo: confirmUrl || '(empty — falls back to Supabase Site URL)' });
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: confirmUrl || undefined,
+    });
     setLoading(false);
 
     if (resetError) {

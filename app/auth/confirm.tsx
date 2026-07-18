@@ -15,6 +15,8 @@ import {
   getPendingReturnTo,
   isValidReturnTo,
 } from '../../lib/pendingReturnTo';
+import { isRecoveryPending } from '../../lib/recoveryFlag';
+import { devLog } from '../../lib/devLog';
 import { Colors } from '../../constants/theme';
 
 type Status = 'verifying' | 'success' | 'error';
@@ -31,11 +33,37 @@ export default function AuthConfirmScreen() {
 
   const [status, setStatus] = useState<Status>('verifying');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isRecovery, setIsRecovery] = useState(false);
   const didRedirect = useRef(false);
 
-  const handleSuccess = useCallback(async () => {
+  const handleSuccess = useCallback(async (forceRecovery = false) => {
     if (didRedirect.current) return;
     didRedirect.current = true;
+
+    // Password-recovery links must land on the set-new-password screen,
+    // never on the normal post-login destination. Recovery intent is
+    // detected three ways, since Supabase can deliver a recovery link in
+    // either URL shape: the token_hash/type query params (read here) for
+    // the OTP-exchange format, or the dedicated PASSWORD_RECOVERY auth
+    // event for the hash-fragment implicit format (which never appears in
+    // the query string) — caught either by the effect below, or, more
+    // reliably, by the module-scope listener in lib/supabase.ts that wins
+    // the race against Supabase's own deferred auto-detection (see
+    // lib/recoveryFlag.ts for why the effect below alone isn't enough).
+    const recoveryIntent = forceRecovery || params.type === 'recovery' || isRecoveryPending();
+
+    if (recoveryIntent) {
+      devLog('confirm', {
+        pathname: '/auth/confirm',
+        recoveryIntent: true,
+        branch: 'recovery',
+        destination: '/reset-password',
+      });
+      setIsRecovery(true);
+      setStatus('success');
+      setTimeout(() => router.replace('/reset-password' as any), 1200);
+      return;
+    }
 
     let destination: string = '/';
     try {
@@ -46,9 +74,28 @@ export default function AuthConfirmScreen() {
       // storage unavailable
     }
 
+    devLog('confirm', {
+      pathname: '/auth/confirm',
+      recoveryIntent: false,
+      branch: 'normal-login',
+      destination,
+    });
     setStatus('success');
     setTimeout(() => router.replace(destination as any), 1200);
-  }, []);
+  }, [params.type]);
+
+  // Format-agnostic recovery signal — fires whenever Supabase establishes a
+  // recovery session, regardless of which URL shape delivered it. This is
+  // what makes the hash-fragment implicit flow (invisible to query params)
+  // still land on the set-new-password screen instead of normal routing.
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        handleSuccess(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [handleSuccess]);
 
   // When detectSessionInUrl processes a code/hash and sets the session, pick it up here.
   useEffect(() => {
@@ -108,8 +155,12 @@ export default function AuthConfirmScreen() {
         {status === 'success' && (
           <>
             <Text style={styles.successIcon}>✓</Text>
-            <Text style={styles.heading}>Email confirmed!</Text>
-            <Text style={styles.message}>Signing you in…</Text>
+            <Text style={styles.heading}>
+              {isRecovery ? 'Verified!' : 'Email confirmed!'}
+            </Text>
+            <Text style={styles.message}>
+              {isRecovery ? 'Taking you to set a new password…' : 'Signing you in…'}
+            </Text>
           </>
         )}
 
